@@ -4,9 +4,9 @@ COPY gradle gradle/
 COPY gradlew settings.gradle build.gradle ./
 COPY . .
 
-CMD echo $(build/libs) && gradlew --no-daemon -i clean build
+CMD gradlew --no-daemon -i clean build
 
-ADD build/libs/invoice-manager-0.0.1-SNAPSHOT.jar app.jar
+COPY invoice-manager-0.0.1-SNAPSHOT.jar /
 
 EXPOSE 8080
 
