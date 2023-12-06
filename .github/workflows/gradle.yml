@@ -52,7 +52,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: fra.ocir.io/frkogu3mhwjt/invoice-manager
+          tags: fra.ocir.io/frkogu3mhwjt/invoice-manager/invoice-manager-app
 
 #  deploy:
 #    runs-on: ubuntu-latest
