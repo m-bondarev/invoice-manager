@@ -50,7 +50,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: .
           push: true
           tags: fra.ocir.io/frkogu3mhwjt/invoice-manager/invoice-manager-app
 
