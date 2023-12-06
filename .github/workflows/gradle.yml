@@ -50,8 +50,9 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
+          context: .
           push: true
-          tags: invoice-manager:latest
+          tags: fra.ocir.io/dmitrykvartalny/invoice-manager/invoice-manager-app:latest
 
 #  deploy:
 #    runs-on: ubuntu-latest
