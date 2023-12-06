@@ -46,7 +46,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: false
-          tags: invoice-manager-app
+          tags: invoice-manager-app:latest
 
   get-ocir-repository-test:
     runs-on: ubuntu-latest
