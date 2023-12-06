@@ -40,13 +40,24 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Docker image
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: ./Dockerfile
-          push: false
-          tags: invoice-manager-app:latest
+      - name: Install pack CLI
+        uses: buildpacks/github-actions/setup-pack@v5
+
+      - name: Get jar name
+        id: jar_name
+        run: |
+          jar_name=$(ls ./build/libs -t | head -1)
+          echo "::set-output name=JAR_NAME::$jar_name"
+
+      - name: Build docker image with pack CLI
+        env:
+          JAR_NAME: ${{ steps.jar_name.outputs.JAR_NAME }}
+        run: |
+          pack build invoice-manager-app \
+              --path ./build/libs/$JAR_NAME \
+              --builder paketobuildpacks/builder:base \
+              --buildpack gcr.io/paketo-buildpacks/adoptium \
+              --buildpack paketo-buildpacks/java -e BP_JVM_VERSION=21 \
 
   get-ocir-repository-test:
     runs-on: ubuntu-latest
@@ -77,7 +88,6 @@ jobs:
       - name: Tag and push a container image
         id: tag-and-push-image
         run: |
-          docker build -t invoice-manager-app .
           docker tag "invoice-manager-app" "${{ steps.get-ocir-repository.outputs.repo_path }}"
           docker push "${{ steps.get-ocir-repository.outputs.repo_path }}"
 
