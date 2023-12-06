@@ -47,11 +47,37 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v5
+  get-ocir-repository-test:
+    runs-on: ubuntu-latest
+    name: Get OCIR Repository Test
+
+    needs: build
+
+    env:
+      OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
+      OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
+      OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
+      OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
+      OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
+    steps:
+      - name: Get an OCIR Repository
+        uses: oracle-actions/get-ocir-repository@v1.2.1
+        id: get-ocir-repository
         with:
-          push: true
-          tags: fra.ocir.io/frkogu3mhwjt/invoice-manager/invoice-manager-app
+          name: invoice-manager
+          compartment: ${{ secrets.OCI_CLI_TENANCY }}
+
+      - name: Log into OCIR
+        uses: oracle-actions/login-ocir@v1.2.1
+        id: login-ocir
+        with:
+          auth_token: ${{ secrets.OCI_AUTH_TOKEN }}
+
+      - name: Tag and push a container image
+        id: tag-and-push-image
+        run: |
+          docker tag "invoice-manager" "${{ steps.get-ocir-repository.outputs.repo_path }}"
+          docker push "${{ steps.get-ocir-repository.outputs.repo_path }}"
 
 #  deploy:
 #    runs-on: ubuntu-latest
@@ -74,3 +100,4 @@ jobs:
 #
 ## docker tag invoice-manager:latest fra.ocir.io/dmitrykvartalny/invoice-manager:latest
 ## docker push fra.ocir.io/dmitrykvartalny/invoice-manager:latest
+## fra.ocir.io/frkogu3mhwjt/invoice-manager/invoice-manager-app
