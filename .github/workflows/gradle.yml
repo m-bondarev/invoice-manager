@@ -76,7 +76,8 @@ jobs:
       - name: Tag and push a container image
         id: tag-and-push-image
         run: |
-          docker tag "invoice-manager" "${{ steps.get-ocir-repository.outputs.repo_path }}"
+          docker build -t invoice-manager-app .
+          docker tag "invoice-manager-app" "${{ steps.get-ocir-repository.outputs.repo_path }}"
           docker push "${{ steps.get-ocir-repository.outputs.repo_path }}"
 
 #  deploy:
