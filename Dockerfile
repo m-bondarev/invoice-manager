@@ -6,7 +6,7 @@ COPY . .
 
 CMD gradlew --no-daemon -i clean build
 
-COPY build/invoice-manager-0.0.1-SNAPSHOT.jar invoice-manager-app.jar
+COPY /build/libs/invoice-manager-0.0.1-SNAPSHOT.jar invoice-manager-app.jar
 
 EXPOSE 8080
 
