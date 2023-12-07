@@ -40,26 +40,19 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Download gradle build result
-        uses: actions/download-artifact@v2
-        with:
-          name: build
-          path: build
-
+      - run: pwd
       - run: pwd .
       - run: ls build
 
-      - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v3
+      - name: Set up Docker
+        uses: actions/setup-docker@v3
         with:
-          context: .
-          push: false
-          tags: invoice-manager-app
-          build-args: |
-            BUILD_DATA_DIR=build/libs
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+          dockerfile: Dockerfile
+
+      - name: Build Docker Image
+        run: |
+          docker build -t your-docker-image-name:latest .
+          docker images
 
   get-ocir-repository-test:
     runs-on: ubuntu-latest
