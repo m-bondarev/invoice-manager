@@ -44,14 +44,9 @@ jobs:
       - run: pwd .
       - run: ls build
 
-      - name: Set up Docker
-        uses: actions/setup-docker@v3
-        with:
-          dockerfile: Dockerfile
-
-      - name: Build Docker Image
+      - name: Build docker image
         run: |
-          docker build -t your-docker-image-name:latest .
+          docker build -t invoice-manager-app .
           docker images
 
   get-ocir-repository-test:
