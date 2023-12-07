@@ -40,24 +40,26 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Install pack CLI
-        uses: buildpacks/github-actions/setup-pack@v5.0.0
+      - name: Download gradle build result
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+          path: build
 
-      - name: Get jar name
-        id: jar_name
-        run: |
-          jar_name=$(ls ./build/libs -t | head -1)
-          echo "::set-output name=JAR_NAME::$jar_name"
+      - run: pwd .
+      - run: ls build
 
-      - name: Build docker image with pack CLI
-        env:
-          JAR_NAME: ${{ steps.jar_name.outputs.JAR_NAME }}
-        run: |
-          pack build invoice-manager-app \
-              --path ./build/libs/$JAR_NAME \
-              --builder paketobuildpacks/builder:base \
-              --buildpack gcr.io/paketo-buildpacks/adoptium \
-              --buildpack paketo-buildpacks/java -e BP_JVM_VERSION=21 \
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: false
+          tags: invoice-manager-app
+          build-args: |
+            BUILD_DATA_DIR=build/libs
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
 
   get-ocir-repository-test:
     runs-on: ubuntu-latest
