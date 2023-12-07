@@ -65,23 +65,40 @@ jobs:
         docker tag "invoice-manager-app" "${{ steps.get-ocir-repository.outputs.repo_path }}"
         docker push "${{ steps.get-ocir-repository.outputs.repo_path }}"
 
-    - name: Retrieve the OCID of a named compartment in tenancy
-      uses: oracle-actions/run-oci-cli-command@v1.1.1
-      id: find-compartment-id
-      with:
-        command: 'iam compartment list --compartment-id-in-subtree=true'
-        query: "data[?name=='testing'].id"
-
-    - name: Retrieve the display name and shape of the instances in my compartment
-      uses: oracle-actions/run-oci-cli-command@v1.1.1
-      id: find-instances
-      with:
-        command: 'compute instance list --compartment-id ${{ steps.find-compartment-id.outputs.raw_output }}'
-        query: 'data[*].{name: \"display-name\", shape: shape}'
-
-    - name: List the display name and shape of the instances in my compartment
+    - name: 'Write Config & Key Files'
       run: |
-        echo ${{ steps.find-instances.outputs.output }} | jq .
+        mkdir ~/.oci
+        echo "[DEFAULT]" >> ~/.oci/config
+        echo "user=${{secrets.OCI_CLI_USER}}"               >> ~/.oci/config
+        echo "fingerprint=${{secrets.OCI_CLI_FINGERPRINT}}" >> ~/.oci/config
+        echo "region=${{secrets.OCI_CLI_REGION}}"           >> ~/.oci/config
+        echo "tenancy=${{secrets.OCI_CLI_TENANCY}}"         >> ~/.oci/config
+        echo "key_file=~/.oci/key.pem"                      >> ~/.oci/config
+        echo "${{secrets.OCI_CLI_KEY_CONTENT}}"             >> ~/.oci/key.pem
+
+    - name: 'Install OCI CLI'
+      run: |
+        curl -L -O https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh
+        chmod +x install.sh
+        ./install.sh --accept-all-defaults
+        echo "::add-path::/home/runner/bin"
+        exec -l $SHELL
+
+    - name: 'Fix Config File Permissions'
+      run: |
+        oci setup repair-file-permissions --file /home/runner/.oci/config
+        oci setup repair-file-permissions --file /home/runner/.oci/key.pem
+
+    - name: 'Check Existing Instance'
+      run: |
+        echo "::set-env name=INSTANCE_OCID::$( \
+          oci compute instance list \
+          --lifecycle-state RUNNING \
+          --compartment-id ${{secrets.OCI_CLI_TENANCY}} \
+          --display-name cicd-demo \
+          --query "data [0].id" \
+          --raw-output \
+        )"
 
 #  deploy:
 #    runs-on: ubuntu-latest
