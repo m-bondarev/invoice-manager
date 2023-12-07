@@ -8,7 +8,6 @@ group = 'com.oci'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '21'
 }
 
 configurations {
@@ -23,9 +22,17 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter'
+
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-common:3.2.0'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-common-httpclient-jersey3:3.2.0'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-identity:3.2.0'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-objectstorage:3.2.0'
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok'
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
