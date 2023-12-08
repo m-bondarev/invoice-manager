@@ -43,7 +43,7 @@ jobs:
 
     - name: Build docker image
       run: |
-        docker build -t invoice-manager-app .
+        docker buildx build --platform linux/arm64 -t invoice-manager-app .
         docker images
 
     - name: Log into OCIR

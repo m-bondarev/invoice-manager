@@ -1,4 +1,4 @@
-FROM amazoncorretto:21 AS BUILDER
+FROM arm64v8/amazoncorretto:21 AS BUILDER
 
 COPY gradle gradle/
 COPY gradlew settings.gradle build.gradle ./
