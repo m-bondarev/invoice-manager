@@ -97,7 +97,6 @@ jobs:
       id: find-instances
       with:
         command: 'compute instance list --compartment-id ${{ env.OCI_CLI_TENANCY }}'
-        query: 'data[*].{name: \"oci-ci-cd-instance\", shape: shape}'
 
 #  deploy:
 #    runs-on: ubuntu-latest
