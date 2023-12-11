@@ -96,7 +96,7 @@ jobs:
       uses: oracle-actions/run-oci-cli-command@v1.1.1
       id: find-instances
       with:
-        command: 'compute instance list --compartment-id ${{ env.OCI_CLI_TENANCY }}'
+        command: 'oci compute image list --compartment-id ${{ env.OCI_CLI_TENANCY }}'
 
 #  deploy:
 #    runs-on: ubuntu-latest
