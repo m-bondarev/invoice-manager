@@ -97,6 +97,7 @@ jobs:
       id: find-instances
       with:
         command: 'oci compute image list --compartment-id ${{ env.OCI_CLI_TENANCY }}'
+        silent: false
 
 #  deploy:
 #    runs-on: ubuntu-latest
