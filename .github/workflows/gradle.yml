@@ -80,12 +80,12 @@ jobs:
       uses: oracle-actions/run-oci-cli-command@v1.1.1
       id: find-instance-ip
       with:
-        command: ' oci compute instance list-vnics --instance-id ${{env.INSTANCE_OCID}} --raw-output'
-        query: 'data[0].{public-ip: \"public-ip\"}'
+        command: 'oci compute instance list-vnics --instance-id ${{env.INSTANCE_OCID}} --raw-output'
+        query: 'data[0].{ip: \"public-ip\"}'
         silent: false
 
     - name: Set env
-      run: echo "INSTANCE_IP=$(echo ${{ steps.find-instance-ip.outputs.output }} | jq .public-ip )" >> $GITHUB_ENV
+      run: echo "INSTANCE_IP=$(echo ${{ steps.find-instance-ip.outputs.output }} | jq .ip )" >> $GITHUB_ENV
 
     - name: Test
       run: echo ${{ env.INSTANCE_IP }}
