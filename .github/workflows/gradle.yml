@@ -66,32 +66,6 @@ jobs:
         docker tag "invoice-manager-app" "${{ steps.get-ocir-repository.outputs.repo_path }}"
         docker push "${{ steps.get-ocir-repository.outputs.repo_path }}"
 
-    - name: 'Write Config & Key Files'
-      run: |
-        mkdir ~/.oci
-        echo "[DEFAULT]" >> ~/.oci/config
-        echo "user=${{secrets.OCI_CLI_USER}}"               >> ~/.oci/config
-        echo "fingerprint=${{secrets.OCI_CLI_FINGERPRINT}}" >> ~/.oci/config
-        echo "region=${{secrets.OCI_CLI_REGION}}"           >> ~/.oci/config
-        echo "tenancy=${{secrets.OCI_CLI_TENANCY}}"         >> ~/.oci/config
-        echo "key_file=~/.oci/key.pem"                      >> ~/.oci/config
-        echo "${{secrets.OCI_CLI_KEY_CONTENT}}"             >> ~/.oci/key.pem
-
-    - name: 'Install OCI CLI'
-      run: |
-        curl -L -O https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh
-        chmod +x install.sh
-        ./install.sh --accept-all-defaults
-        echo "/home/runner/bin" >> $GITHUB_PATH
-        exec -l $SHELL
-
-    - run: oci --version
-
-    - name: 'Fix Config File Permissions'
-      run: |
-        oci setup repair-file-permissions --file /home/runner/.oci/config
-        oci setup repair-file-permissions --file /home/runner/.oci/key.pem
-
     - name: Retrieve the display name and shape of the instances in my compartment
       uses: oracle-actions/run-oci-cli-command@v1.1.1
       id: find-instances
