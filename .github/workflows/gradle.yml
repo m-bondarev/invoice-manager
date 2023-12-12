@@ -76,8 +76,18 @@ jobs:
     - name: Set env
       run: echo "INSTANCE_OCID=$(echo ${{ steps.find-instances.outputs.output }} | jq .id )" >> $GITHUB_ENV
 
+    - name: Retrieve instance ip
+      uses: oracle-actions/run-oci-cli-command@v1.1.1
+      id: find-instance-ip
+      with:
+        command: ' oci compute instance list-vnics --instance-id ${{env.INSTANCE_OCID}} --raw-output'
+        query: 'data[0].{public-ip: \"public-ip\"}'
+
+    - name: Set env
+      run: echo "INSTANCE_IP=$(echo ${{ steps.find-instance-ip.outputs.output }} | jq .public-ip )" >> $GITHUB_ENV
+
     - name: Test
-      run: echo ${{ env.INSTANCE_OCID }}
+      run: echo ${{ env.INSTANCE_IP }}
 
 #  deploy:
 #    runs-on: ubuntu-latest
