@@ -77,7 +77,7 @@ jobs:
       run: echo "INSTANCE_OCID=$(echo ${{ steps.find-instances.outputs.output }} | jq .id )" >> $GITHUB_ENV
 
     - name: Test
-      run: echo INSTANCE_OCID
+      run: echo ${{ env.INSTANCE_OCID }}
 
 #  deploy:
 #    runs-on: ubuntu-latest
