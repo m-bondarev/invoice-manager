@@ -1,0 +1,121 @@
+{
+  "data": [
+    {
+      "agent-config": {
+        "are-all-plugins-disabled": false,
+        "is-management-disabled": false,
+        "is-monitoring-disabled": false,
+        "plugins-config": [
+          {
+            "desired-state": "DISABLED",
+            "name": "Vulnerability Scanning"
+          },
+          {
+            "desired-state": "DISABLED",
+            "name": "Oracle Java Management Service"
+          },
+          {
+            "desired-state": "ENABLED",
+            "name": "OS Management Service Agent"
+          },
+          {
+            "desired-state": "DISABLED",
+            "name": "Compute RDMA GPU Monitoring"
+          },
+          {
+            "desired-state": "ENABLED",
+            "name": "Compute Instance Run Command"
+          },
+          {
+            "desired-state": "ENABLED",
+            "name": "Compute Instance Monitoring"
+          },
+          {
+            "desired-state": "DISABLED",
+            "name": "Compute HPC RDMA Auto-Configuration"
+          },
+          {
+            "desired-state": "DISABLED",
+            "name": "Compute HPC RDMA Authentication"
+          },
+          {
+            "desired-state": "DISABLED",
+            "name": "Block Volume Management"
+          },
+          {
+            "desired-state": "DISABLED",
+            "name": "Bastion"
+          }
+        ]
+      },
+      "availability-config": {
+        "is-live-migration-preferred": true,
+        "recovery-action": "RESTORE_INSTANCE"
+      },
+      "availability-domain": "NoZO:EU-FRANKFURT-1-AD-1",
+      "capacity-reservation-id": null,
+      "compartment-id": "***",
+      "dedicated-vm-host-id": null,
+      "defined-tags": {
+        "Oracle-Tags": {
+          "CreatedBy": "default/m.bondarev",
+          "CreatedOn": "2023-12-12T10:16:09.391Z"
+        }
+      },
+      "display-name": "oci-ci-cd-instance",
+      "extended-metadata": {},
+      "fault-domain": "FAULT-DOMAIN-3",
+      "freeform-tags": {},
+      "id": "ocid1.instance.oc1.***.antheljrbas6vyicusnakvj6bdrr7bw4ckb2ga3v6wzbhsz427rlpxbujxbq",
+      "image-id": "ocid1.image.oc1.***.aaaaaaaah4ztechann5uysuliuwjxas7obc3lhmx3bmeec4uq4pmsm5dwowq",
+      "instance-configuration-id": null,
+      "instance-options": {
+        "are-legacy-imds-endpoints-disabled": false
+      },
+      "ipxe-script": null,
+      "is-cross-numa-node": false,
+      "launch-mode": "PARAVIRTUALIZED",
+      "launch-options": {
+        "boot-volume-type": "PARAVIRTUALIZED",
+        "firmware": "UEFI_64",
+        "is-consistent-volume-naming-enabled": true,
+        "is-pv-encryption-in-transit-enabled": true,
+        "network-type": "PARAVIRTUALIZED",
+        "remote-data-volume-type": "PARAVIRTUALIZED"
+      },
+      "lifecycle-state": "RUNNING",
+      "metadata": {
+        "ssh_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDMdc9STBWmDVlp64dOwRyVKo44mvHVRrLO5D85MML0hZdiiDnRpirBeiXYcFYsWrbyPzJ7S+x9d54LKiCZJ/FCMQUHXcYhsSggh0wcZM+Kbqgu3wBv2w3UNc2ddveneyPQhh66rAxl8mJPf+lUm1PluJl9izotSgSFvR7p1Rt/JFLN9Txhp+HE36dFNOpm03neFbeE7f3M+V2Pj4s0nTB7AsPihG5/IBnopsdLpKGN+zJorAhQ/VNCPfCvw6HSYT8KjwBp6bvJZ6jXhuTRZA9arQXEYiKnu4uqzOIKVsKbC9eXxux5L0zqWjWp1tybz5aobbSD4pe6jUXEYnriuUZv ssh-key-2023-12-12"
+      },
+      "platform-config": null,
+      "preemptible-instance-config": null,
+      "region": "***",
+      "shape": "VM.Standard.A1.Flex",
+      "shape-config": {
+        "baseline-ocpu-utilization": null,
+        "gpu-description": null,
+        "gpus": 0,
+        "local-disk-description": null,
+        "local-disks": 0,
+        "local-disks-total-size-in-gbs": null,
+        "max-vnic-attachments": 4,
+        "memory-in-gbs": 4,
+        "networking-bandwidth-in-gbps": 4,
+        "ocpus": 4,
+        "processor-description": "3.0 GHz Ampere® Altra™",
+        "vcpus": 4
+      },
+      "source-details": {
+        "boot-volume-size-in-gbs": null,
+        "boot-volume-vpus-per-gb": null,
+        "image-id": "ocid1.image.oc1.***.aaaaaaaah4ztechann5uysuliuwjxas7obc3lhmx3bmeec4uq4pmsm5dwowq",
+        "instance-source-image-filter-details": null,
+        "kms-key-id": null,
+        "source-type": "image"
+      },
+      "system-tags": {},
+      "time-created": "2023-12-12T10:16:09.778000+00:00",
+      "time-maintenance-reboot-due": null
+    }
+  ]
+}
