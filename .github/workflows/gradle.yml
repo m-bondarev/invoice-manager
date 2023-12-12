@@ -82,6 +82,7 @@ jobs:
       with:
         command: ' oci compute instance list-vnics --instance-id ${{env.INSTANCE_OCID}} --raw-output'
         query: 'data[0].{public-ip: \"public-ip\"}'
+        silent: false
 
     - name: Set env
       run: echo "INSTANCE_IP=$(echo ${{ steps.find-instance-ip.outputs.output }} | jq .public-ip )" >> $GITHUB_ENV
