@@ -74,7 +74,7 @@ jobs:
         query: 'data[0].{id: \"id\"}'
 
     - name: Set env
-      run: echo "INSTANCE_OCID=$(echo ${{ steps.find-instances.outputs.output }} | jq .)" >> $GITHUB_ENV
+      run: echo "INSTANCE_OCID=$(echo ${{ steps.find-instances.outputs.output }} | jq .id )" >> $GITHUB_ENV
 
     - name: Test
       run: echo INSTANCE_OCID
