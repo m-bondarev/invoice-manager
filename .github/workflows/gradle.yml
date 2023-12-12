@@ -66,12 +66,19 @@ jobs:
         docker tag "invoice-manager-app" "${{ steps.get-ocir-repository.outputs.repo_path }}"
         docker push "${{ steps.get-ocir-repository.outputs.repo_path }}"
 
-    - name: Retrieve the display name and shape of the instances in my compartment
+    - name: Retrieve the instance id in my compartment
       uses: oracle-actions/run-oci-cli-command@v1.1.1
       id: find-instances
       with:
-        command: 'oci compute instance list --compartment-id ${{ env.OCI_CLI_TENANCY }}'
+        command: 'oci compute instance list --lifecycle-state RUNNING --display-name oci-ci-cd-instance --raw-output --compartment-id ${{ env.OCI_CLI_TENANCY }}'
+        query: "data [0].id"
         silent: false
+
+    - name: Set env
+      run: echo "INSTANCE_OCID=$(echo ${{ steps.find-instances.outputs.output }} | jq .)" >> $GITHUB_ENV
+
+    - name: Test
+      run: echo INSTANCE_OCID
 
 #  deploy:
 #    runs-on: ubuntu-latest
