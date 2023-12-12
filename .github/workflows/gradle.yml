@@ -71,7 +71,7 @@ jobs:
       id: find-instances
       with:
         command: 'oci compute instance list --display-name oci-ci-cd-instance --raw-output --compartment-id ${{ env.OCI_CLI_TENANCY }}'
-        query: "data[0].id"
+        query: 'data[0].{id: \"id\"}'
 
     - name: Set env
       run: echo "INSTANCE_OCID=$(echo ${{ steps.find-instances.outputs.output }} | jq .)" >> $GITHUB_ENV
