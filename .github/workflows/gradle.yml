@@ -61,11 +61,14 @@ jobs:
         name: invoice-manager
         compartment: ${{ secrets.OCI_CLI_COMPARTMENT_ID }}
 
-    - name: Tag and push a container image
-      id: tag-and-push-image
-      run: |
-        docker tag "invoice-manager-app" "${{ steps.get-ocir-repository.outputs.repo_path }}"
-        docker push "${{ steps.get-ocir-repository.outputs.repo_path }}"
+    - name: Build
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        platforms: linux/arm64
+        tags: ${{ steps.get-ocir-repository.outputs.repo_path }}
+        secrets: |
+          "OCI_CLI_KEY_CONTENT=${{ env.OCI_CLI_KEY_CONTENT }}"   
 
     - name: Retrieve the instance id in my compartment
       uses: oracle-actions/run-oci-cli-command@v1.1.1
@@ -87,6 +90,21 @@ jobs:
 
     - name: Set env
       run: echo "INSTANCE_IP=$(echo ${{ steps.find-instance-ip.outputs.output }} | jq .ip )" >> $GITHUB_ENV
+
+    - name: Wait for SSH
+      run: |
+        while ! nc -w5 -z ${{ env.INSTANCE_IP }} 22; do
+                sleep 5
+                echo "SSH not available..."
+        done; echo "SSH ready!"
+
+    - name: Ssh to oracle to start docker container
+      uses: garygrossgarten/github-action-ssh@release
+      with:
+        command: whoami
+        host: ${{ env.INSTANCE_IP }}
+        username: ubuntu
+        privateKey: ${{ env.OCI_CLI_KEY_CONTENT}}
 
 #    - name: Install ssh keys
 #      run: |
