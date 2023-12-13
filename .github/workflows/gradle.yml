@@ -11,17 +11,78 @@ permissions:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+
+    env:
+      OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
+      OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
+      OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
+      OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
+      OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
+      INSTANCE_OCID: ${{ secrets.INSTANCE_OCID }}
 
     steps:
     - uses: actions/checkout@v3
+
     - name: Set up JDK 21
       uses: actions/setup-java@v3
       with:
         java-version: '21'
         distribution: 'temurin'
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
+
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+
+    - name: Run build with Gradle Wrapper
+      run: ./gradlew build
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build docker image
+      run: |
+        docker build --platform linux/arm64 -t invoice-manager-app .
+        docker images
+
+    - name: Log into OCIR
+      uses: oracle-actions/login-ocir@v1.2.1
+      id: login-ocir
       with:
-        arguments: build
+        auth_token: ${{ secrets.OCI_AUTH_TOKEN }}
+
+    - name: Get an OCIR Repository
+      uses: oracle-actions/get-ocir-repository@v1.2.1
+      id: get-ocir-repository
+      with:
+        name: invoice-manager
+        compartment: ${{ secrets.OCI_CLI_TENANCY }}
+
+    - name: Tag and push a container image
+      id: tag-and-push-image
+      run: |
+        docker tag "invoice-manager-app" "${{ steps.get-ocir-repository.outputs.repo_path }}"
+        docker push "${{ steps.get-ocir-repository.outputs.repo_path }}"
+
+    - name: Retrieve the instance id in my compartment
+      uses: oracle-actions/run-oci-cli-command@v1.1.1
+      id: find-instances
+      with:
+        command: 'oci compute instance list --display-name oci-ci-cd-instance --raw-output --compartment-id ${{ env.OCI_CLI_TENANCY }}'
+        query: 'data[0].{id: \"id\"}'
+
+    - name: Set env
+      run: echo "INSTANCE_OCID=$(echo ${{ steps.find-instances.outputs.output }} | jq .id )" >> $GITHUB_ENV
+
+    - name: Retrieve instance ip
+      uses: oracle-actions/run-oci-cli-command@v1.1.1
+      id: find-instance-ip
+      with:
+        command: 'oci compute instance list-vnics --instance-id ${{env.INSTANCE_OCID}} --raw-output'
+        query: 'data[0].{ip: \"public-ip\"}'
+        silent: false
+
+    - name: Set env
+      run: echo "INSTANCE_IP=$(echo ${{ steps.find-instance-ip.outputs.output }} | jq .ip )" >> $GITHUB_ENV
