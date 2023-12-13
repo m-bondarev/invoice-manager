@@ -31,7 +31,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Setup Gradle
-      uses: gradle/gradle-build-action@v2
+      uses: gradle/gradle-build-action@2.4.2
 
     - name: Run build with Gradle Wrapper
       run: ./gradlew build
@@ -86,3 +86,30 @@ jobs:
 
     - name: Set env
       run: echo "INSTANCE_IP=$(echo ${{ steps.find-instance-ip.outputs.output }} | jq .ip )" >> $GITHUB_ENV
+
+    - name: Wait for SSH
+      run: |
+        while ! nc -w5 -z ${{ env.INSTANCE_IP }} 22; do
+                sleep 5
+                echo "SSH not available..."
+        done; echo "SSH ready!"
+
+    - name: Ssh to oracle to start docker container
+      uses: garygrossgarten/github-action-ssh@release
+      with:
+        command: whoami
+        host: ${{ env.INSTANCE_IP }}
+        username: ubuntu
+        privateKey: ${{ env.OCI_CLI_KEY_CONTENT}}
+
+#    - name: Install ssh keys
+#      run: |
+#        install -m 600 -D /dev/null ~/.ssh/id_rsa
+#        echo "${{ env.OCI_CLI_KEY_CONTENT }}" > ~/.ssh/id_rsa
+#        ssh-keyscan -H ${{ secrets.INSTANCE_IP }} > ~/.ssh/known_hosts
+#
+#    - name: Connect and pull
+#      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && docker compose pull && docker compose up -d && exit"
+#
+#    - name: Cleanup
+#      run: rm -rf ~/.ssh
