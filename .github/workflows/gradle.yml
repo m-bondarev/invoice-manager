@@ -103,6 +103,7 @@ jobs:
         username: ubuntu
         privateKey: ${{ env.OCI_CLI_KEY_CONTENT}}
 
+
 #    - name: Install ssh keys
 #      run: |
 #        install -m 600 -D /dev/null ~/.ssh/id_rsa
