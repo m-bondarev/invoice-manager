@@ -60,6 +60,7 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         context: .
+        push: true
         platforms: linux/arm64
         tags: ${{ steps.get-ocir-repository.outputs.repo_path }}
         secrets: |
