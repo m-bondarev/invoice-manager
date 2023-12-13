@@ -64,8 +64,8 @@ jobs:
         platforms: linux/arm64
         tags: ${{ steps.get-ocir-repository.outputs.repo_path }}
         secrets: |
-          "OCI_CLI_KEY_CONTENT=${{ env.OCI_CLI_KEY_CONTENT }}"   
-          "OCI_CLI_REGION=${{ env.OCI_CLI_REGION }}"   
+          OCI_CLI_KEY_CONTENT=${{ env.OCI_CLI_KEY_CONTENT }}
+          OCI_CLI_REGION=${{ env.OCI_CLI_REGION }}
 
     - name: Retrieve the instance id in my compartment
       uses: oracle-actions/run-oci-cli-command@v1.1.1
