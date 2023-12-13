@@ -1,7 +1,7 @@
 ostorage:
   region: ${OCI_CLI_REGION}
   nameSpace: frkogu3mhwjt
-  bucketName: invoice_manager_bucket
+  bucketName: maryTestBucket
   tenancyId: ${OCI_CLI_TENANCY}
   userId: ${OCI_CLI_USER}
   fingerprint: ${OCI_CLI_FINGERPRINT}
