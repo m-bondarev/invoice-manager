@@ -19,6 +19,7 @@ jobs:
       OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
       OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
       OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
+      OCI_CLI_COMPARTMENT_ID: ${{ secrets.OCI_CLI_COMPARTMENT_ID }}
       INSTANCE_OCID: ${{ secrets.INSTANCE_OCID }}
 
     steps:
@@ -58,7 +59,7 @@ jobs:
       id: get-ocir-repository
       with:
         name: invoice-manager
-        compartment: ${{ secrets.OCI_CLI_TENANCY }}
+        compartment: ${{ secrets.OCI_CLI_COMPARTMENT_ID }}
 
     - name: Tag and push a container image
       id: tag-and-push-image
