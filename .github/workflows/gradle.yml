@@ -43,11 +43,6 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
-    - name: Build docker image
-      run: |
-        docker build --platform linux/arm64 -t invoice-manager-app .
-        docker images
-
     - name: Log into OCIR
       uses: oracle-actions/login-ocir@v1.2.1
       id: login-ocir
