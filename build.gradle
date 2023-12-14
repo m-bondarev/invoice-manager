@@ -16,6 +16,10 @@ configurations {
 	}
 }
 
+java {
+	sourceCompatibility = '21'
+}
+
 repositories {
 	mavenCentral()
 }
