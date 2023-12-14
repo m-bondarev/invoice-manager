@@ -74,7 +74,7 @@ jobs:
       uses: oracle-actions/run-oci-cli-command@v1.1.1
       id: find-instances
       with:
-        command: 'oci compute instance list --display-name oci-ci-cd-instance --raw-output --compartment-id ${{ env.OCI_CLI_TENANCY }}'
+        command: 'oci compute instance list --display-name oci-ci-cd-instance --raw-output --compartment-id ${{ env.OCI_CLI_COMPARTMENT_ID }}'
         query: 'data[0].{id: \"id\"}'
 
     - name: Set env
