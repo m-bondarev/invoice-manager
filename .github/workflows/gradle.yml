@@ -104,7 +104,7 @@ jobs:
       with:
         command: |
           sudo docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}" fra.ocir.io
-          sudo  do docker pull fra.ocir.io/frkogu3mhwjt/invoice-manager
+          sudo docker pull fra.ocir.io/frkogu3mhwjt/invoice-manager
           sudo docker images
         host: ${{ env.INSTANCE_IP }}
         username: ubuntu
