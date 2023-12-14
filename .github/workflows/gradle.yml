@@ -66,6 +66,9 @@ jobs:
         secrets: |
           OCI_CLI_KEY_CONTENT=${{ env.OCI_CLI_KEY_CONTENT }}
           OCI_CLI_REGION=${{ env.OCI_CLI_REGION }}
+          OCI_CLI_USER=${{ env.OCI_CLI_USER }}
+          OCI_CLI_TENANCY=${{ env.OCI_CLI_TENANCY }}
+          OCI_CLI_FINGERPRINT=${{ env.OCI_CLI_FINGERPRINT }}
 
     - name: Retrieve the instance id in my compartment
       uses: oracle-actions/run-oci-cli-command@v1.1.1
