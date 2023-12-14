@@ -20,6 +20,7 @@ jobs:
       OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
       OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
       OCI_CLI_COMPARTMENT_ID: ${{ secrets.OCI_CLI_COMPARTMENT_ID }}
+      OCI_CLI_INSTANCE_PRIVATE_KEY: ${{ secrets.OCI_CLI_INSTANCE_PRIVATE_KEY }}
       INSTANCE_OCID: ${{ secrets.INSTANCE_OCID }}
 
     steps:
@@ -104,7 +105,7 @@ jobs:
         command: whoami
         host: ${{ env.INSTANCE_IP }}
         username: ubuntu
-        privateKey: ${{ env.OCI_CLI_KEY_CONTENT}}
+        privateKey: ${{ env.OCI_CLI_INSTANCE_PRIVATE_KEY}}
 
 #    - name: Install ssh keys
 #      run: |
