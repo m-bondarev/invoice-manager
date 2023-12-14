@@ -3,7 +3,7 @@ resource "oci_functions_application" "export_test_function" {
   compartment_id = var.compartment_ocid
   display_name   = "test-function-01"
   shape          = "GENERIC_X86"
-  subnet_ids     = [
+  subnet_ids = [
     oci_core_subnet.public_subnet.id,
   ]
   trace_config {
