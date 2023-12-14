@@ -103,7 +103,7 @@ jobs:
       uses: garygrossgarten/github-action-ssh@release
       with:
         command: |
-          sudo docker login fra.ocir.io --password ${{ secrets.DOCKER_PASSWORD }} --username ${{ secrets.DOCKER_USERNAME }}
+          sudo docker login --password ${{ secrets.DOCKER_PASSWORD }} --username ${{ secrets.DOCKER_USERNAME }} fra.ocir.io
           sudo docker pull fra.ocir.io/frkogu3mhwjt/invoice-manager
           sudo docker images
         host: ${{ env.INSTANCE_IP }}
