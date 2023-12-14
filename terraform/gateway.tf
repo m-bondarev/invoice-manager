@@ -58,7 +58,7 @@ resource "oci_apigateway_gateway" "manager_api_gw" {
   }
 }
 
-resource oci_apigateway_deployment manager_api_gw_deployment {
+resource "oci_apigateway_deployment" "manager_api_gw_deployment" {
   compartment_id = var.compartment_ocid
   display_name   = "foo-GW-deployment"
   gateway_id     = oci_apigateway_gateway.manager_api_gw.id
