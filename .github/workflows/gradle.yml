@@ -102,7 +102,9 @@ jobs:
     - name: Ssh to oracle to start docker container
       uses: garygrossgarten/github-action-ssh@release
       with:
-        command: whoami
+        command: |
+          docker pull fra.ocir.io/frkogu3mhwjt/invoice-manager
+          docker images
         host: ${{ env.INSTANCE_IP }}
         username: ubuntu
         privateKey: ${{ env.OCI_CLI_INSTANCE_PRIVATE_KEY}}
