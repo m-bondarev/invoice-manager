@@ -10,11 +10,11 @@ COPY /build/libs/invoice-manager-0.0.1-SNAPSHOT.jar invoice-manager-app.jar
 
 EXPOSE 8080
 
-RUN --mount=type=secret,id=OCI_CLI_KEY_CONTENT \
-    --mount=type=secret,id=OCI_CLI_REGION \
-    --mount=type=secret,id=OCI_CLI_USER \
-    --mount=type=secret,id=OCI_CLI_TENANCY \
-    --mount=type=secret,id=OCI_CLI_FINGERPRINT
+ARG OCI_CLI_KEY_CONTENT
+ARG OCI_CLI_REGION
+ARG OCI_CLI_USER
+ARG OCI_CLI_TENANCY
+ARG OCI_CLI_FINGERPRINT
 
 ENV OCI_CLI_KEY_CONTENT=${OCI_CLI_KEY_CONTENT}
 ENV OCI_CLI_REGION=${OCI_CLI_REGION}
