@@ -1,6 +1,6 @@
 package com.oci.invoicemanager.objstorage;
 
-import com.oci.invoicemanager.config.ObjectStorageConfigs;
+import com.oci.invoicemanager.config.OCIClientConfig.OCIClientProps;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.objectstorage.model.ObjectSummary;
@@ -15,6 +15,7 @@ import com.oracle.bmc.objectstorage.responses.PutObjectResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jvnet.hk2.annotations.Service;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 
 import java.io.IOException;
@@ -25,8 +26,11 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class ObjectStorageManager {
-    private final ObjectStorageConfigs.ObjectStorageProps storageConfigs;
     private final AuthenticationDetailsProvider provider;
+    @Value("${oci.ostorage.nameSpace}")
+    private final String namespace;
+    @Value("${oci.ostorage.bucketName}")
+    private final String bucketName;
 
     public List<String> listObjects(String prefix, Integer limit) {
 
@@ -34,8 +38,8 @@ public class ObjectStorageManager {
                 .build(provider)) {
 
             ListObjectsRequest listObjectsRequest = ListObjectsRequest.builder()
-                    .namespaceName(storageConfigs.namespace())
-                    .bucketName(storageConfigs.bucketName())
+                    .namespaceName(namespace)
+                    .bucketName(bucketName)
                     .prefix(prefix)
                     .limit(limit)
                     .build();
@@ -56,8 +60,8 @@ public class ObjectStorageManager {
         try (ObjectStorageClient client = ObjectStorageClient.builder()
                 .build(provider)) {
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                    .namespaceName(storageConfigs.namespace())
-                    .bucketName(storageConfigs.bucketName())
+                    .namespaceName(namespace)
+                    .bucketName(bucketName)
                     .objectName(objName)
                     .build();
 
@@ -78,8 +82,8 @@ public class ObjectStorageManager {
         try (ObjectStorageClient client = ObjectStorageClient.builder()
                 .build(provider)) {
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                    .namespaceName(storageConfigs.namespace())
-                    .bucketName(storageConfigs.bucketName())
+                    .namespaceName(namespace)
+                    .bucketName(bucketName)
                     .objectName(name)
                     .contentType(contentType)
                     .body$(body)
@@ -96,8 +100,8 @@ public class ObjectStorageManager {
         try (ObjectStorageClient client = ObjectStorageClient.builder()
                 .build(provider)) {
             DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
-                    .namespaceName(storageConfigs.namespace())
-                    .bucketName(storageConfigs.bucketName())
+                    .namespaceName(namespace)
+                    .bucketName(bucketName)
                     .objectName(name)
                     .build();
 

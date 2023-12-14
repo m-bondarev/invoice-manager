@@ -28,10 +28,11 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter'
 
-	implementation 'com.oracle.oci.sdk:oci-java-sdk-common:3.2.0'
-	implementation 'com.oracle.oci.sdk:oci-java-sdk-common-httpclient-jersey3:3.2.0'
-	implementation 'com.oracle.oci.sdk:oci-java-sdk-identity:3.2.0'
-	implementation 'com.oracle.oci.sdk:oci-java-sdk-objectstorage:3.2.0'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-common:3.30.0'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-common-httpclient-jersey3:3.30.0'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-identity:3.30.0'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-objectstorage:3.30.0'
+    implementation 'com.oracle.oci.sdk:oci-java-sdk-ons:3.30.0'
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'

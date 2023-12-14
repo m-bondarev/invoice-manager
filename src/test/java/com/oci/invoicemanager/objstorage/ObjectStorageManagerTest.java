@@ -1,10 +1,11 @@
 package com.oci.invoicemanager.objstorage;
 
-import com.oci.invoicemanager.config.ObjectStorageConfigs;
+import com.oci.invoicemanager.config.OCIClientConfig.OCIClientProps;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.ByteArrayInputStream;
@@ -21,14 +22,16 @@ class ObjectStorageManagerTest {
     private static final String OBJ_NAME = "a1/test.txt";
     private static final String OBJ_CONTEXT = "Hello OCI";
     @Autowired
-    private ObjectStorageConfigs.ObjectStorageProps props;
-    @Autowired
     private AuthenticationDetailsProvider provider;
     private ObjectStorageManager storageManager;
+    @Value("${oci.ostorage.nameSpace}")
+    private String namespace;
+    @Value("${oci.ostorage.bucketName}")
+    private String bucketName;
 
     @BeforeAll
     public void init() {
-        storageManager = new ObjectStorageManager(props, provider);
+        storageManager = new ObjectStorageManager(provider, namespace, bucketName);
     }
 
     @Test
