@@ -1,8 +1,12 @@
-ostorage:
-  region: ${OCI_CLI_REGION}
-  nameSpace: frkogu3mhwjt
-  bucketName: maryTestBucket
-  tenancyId: ${OCI_CLI_TENANCY}
-  userId: ${OCI_CLI_USER}
-  fingerprint: ${OCI_CLI_FINGERPRINT}
-  privateKey: ${OCI_CLI_KEY_CONTENT}
+oci:
+  client:
+    region: ${OCI_CLI_REGION:fra}
+    tenancyId: ${OCI_CLI_TENANCY}
+    userId: ${OCI_CLI_USER}
+    fingerprint: ${OCI_CLI_FINGERPRINT}
+    privateKey: ${OCI_CLI_KEY_CONTENT}
+  notification:
+    topicId: ocid1.onstopic.oc1.eu-frankfurt-1.amaaaaaabas6vyiamdvbdjqfpkekmvc6mzemc7gsmxcty6wlykauwfzz5tva
+  ostorage:
+    nameSpace: frkogu3mhwjt
+    bucketName: maryTestBucket
