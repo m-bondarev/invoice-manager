@@ -1,6 +1,6 @@
 oci:
   client:
-    region: ${OCI_CLI_REGION}
+    region: ${OCI_CLI_REGION:fra}
     tenancyId: ${OCI_CLI_TENANCY}
     userId: ${OCI_CLI_USER}
     fingerprint: ${OCI_CLI_FINGERPRINT}

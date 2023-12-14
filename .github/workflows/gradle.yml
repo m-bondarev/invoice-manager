@@ -32,7 +32,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Setup Gradle
-      uses: gradle/gradle-build-action@v2
+      uses: gradle/gradle-build-action@v2.11.0
 
     - name: Run build with Gradle Wrapper
       run: ./gradlew build
@@ -63,9 +63,12 @@ jobs:
         push: true
         platforms: linux/arm64
         tags: ${{ steps.get-ocir-repository.outputs.repo_path }}
-        secrets: |
-          OCI_CLI_KEY_CONTENT=${{ env.OCI_CLI_KEY_CONTENT }}
-          OCI_CLI_REGION=${{ env.OCI_CLI_REGION }}
+        build-args: |
+          "OCI_CLI_KEY_CONTENT=${{ env.OCI_CLI_KEY_CONTENT }}"
+          "OCI_CLI_REGION=${{ env.OCI_CLI_REGION }}"
+          "OCI_CLI_USER=${{ env.OCI_CLI_USER }}"
+          "OCI_CLI_TENANCY=${{ env.OCI_CLI_TENANCY }}"
+          "OCI_CLI_FINGERPRINT=${{ env.OCI_CLI_FINGERPRINT }}"
 
     - name: Retrieve the instance id in my compartment
       uses: oracle-actions/run-oci-cli-command@v1.1.1
