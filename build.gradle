@@ -33,6 +33,7 @@ dependencies {
 	implementation 'com.oracle.oci.sdk:oci-java-sdk-identity:3.30.0'
 	implementation 'com.oracle.oci.sdk:oci-java-sdk-objectstorage:3.30.0'
     implementation 'com.oracle.oci.sdk:oci-java-sdk-ons:3.30.0'
+    implementation 'com.oracle.oci.sdk:oci-java-sdk-queue:3.30.0'
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
