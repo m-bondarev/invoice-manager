@@ -32,7 +32,9 @@ public class InvoiceController {
   public String getById(
       @PathVariable final long id
   ) {
-    final var messages = queueClient.getMessages(GetMessagesRequest.builder().build());
+    final var messages = queueClient.getMessages(GetMessagesRequest.builder()
+        .queueId("ocid1.queue.oc1.eu-frankfurt-1.amaaaaaabas6vyiaodmj6xvsrhossja7lgjggjz6npjb63ejgvaa736xhiva")
+        .build());
 
     return messages.getGetMessages().toString();
   }
@@ -44,10 +46,12 @@ public class InvoiceController {
     return invoiceDto;
   }
 
-  public record PublishMessage(String message, String title) {}
-
   @PostMapping("/publishMessage")
   public String publishMessage(@RequestBody PublishMessage publishMessage) {
     return notificationService.publishMessage(publishMessage).toString();
+  }
+
+  public record PublishMessage(String message, String title) {
+
   }
 }
