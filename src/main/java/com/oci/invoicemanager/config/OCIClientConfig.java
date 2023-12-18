@@ -25,6 +25,9 @@ public class OCIClientConfig {
 
   @Bean
   public AuthenticationDetailsProvider authenticationDetailsProvider(OCIClientProps clientProps) {
+
+    log.info(clientProps.toString());
+
     return SimpleAuthenticationDetailsProvider.builder()
         .tenantId(clientProps.tenancyId())
         .userId(clientProps.userId())
