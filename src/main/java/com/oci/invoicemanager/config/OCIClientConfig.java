@@ -5,6 +5,7 @@ import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.StringPrivateKeySupplier;
 import com.oracle.bmc.ons.NotificationDataPlaneClient;
+import com.oracle.bmc.queue.QueueClient;
 import java.io.InputStream;
 import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,15 @@ public class OCIClientConfig {
   public NotificationDataPlaneClient notificationDataPlaneClient(
       AuthenticationDetailsProvider provider) {
     return NotificationDataPlaneClient.builder().build(provider);
+  }
+
+  @Bean
+  public QueueClient queueClient(
+      AuthenticationDetailsProvider authenticationDetailsProvider
+  ) {
+    return QueueClient.builder()
+        .endpoint("https://cell-1.queue.messaging.eu-frankfurt-1.oci.oraclecloud.com")
+        .build(authenticationDetailsProvider);
   }
 
 

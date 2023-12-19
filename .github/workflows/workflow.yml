@@ -21,6 +21,8 @@ jobs:
       OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
       OCI_CLI_COMPARTMENT_ID: ${{ secrets.OCI_CLI_COMPARTMENT_ID }}
       OCI_CLI_INSTANCE_PRIVATE_KEY: ${{ secrets.OCI_CLI_INSTANCE_PRIVATE_KEY }}
+      OCI_DB_USER: ${{ secrets.OCI_DB_USER }}
+      OCI_DB_PASSWORD: ${{ secrets.OCI_DB_PASSWORD }}
       INSTANCE_OCID: ${{ secrets.INSTANCE_OCID }}
 
     steps:
@@ -103,9 +105,10 @@ jobs:
       uses: garygrossgarten/github-action-ssh@release
       with:
         command: |
+          sudo docker rm $(sudo docker stop $(sudo docker ps -a --format "{{.Names}}"))
           sudo docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}" fra.ocir.io
           sudo docker pull fra.ocir.io/frkogu3mhwjt/invoice-manager
-          sudo docker images
+          sudo docker run -p 8080:8080 -d fra.ocir.io/frkogu3mhwjt/invoice-manager:latest
         host: ${{ env.INSTANCE_IP }}
         username: ubuntu
         privateKey: ${{ env.OCI_CLI_INSTANCE_PRIVATE_KEY}}
