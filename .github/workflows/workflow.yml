@@ -108,7 +108,7 @@ jobs:
           sudo docker rm $(sudo docker stop $(sudo docker ps -a --format "{{.Names}}"))
           sudo docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}" fra.ocir.io
           sudo docker pull fra.ocir.io/frkogu3mhwjt/invoice-manager
-          sudo docker images
+          sudo docker run -p 8080:8080 -d fra.ocir.io/frkogu3mhwjt/invoice-manager:latest
         host: ${{ env.INSTANCE_IP }}
         username: ubuntu
         privateKey: ${{ env.OCI_CLI_INSTANCE_PRIVATE_KEY}}
