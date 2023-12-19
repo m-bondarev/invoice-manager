@@ -1,6 +1,5 @@
 package com.oci.invoicemanager.objstorage;
 
-import com.oci.invoicemanager.config.OCIClientConfig.OCIClientProps;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.*;
@@ -19,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 class ObjectStorageManagerTest {
-    private static final String OBJ_NAME = "a1/test.txt";
+    private static final String OBJ_NAME = "storage/test.txt";
     private static final String OBJ_CONTEXT = "Hello OCI";
     @Autowired
     private AuthenticationDetailsProvider provider;
@@ -36,9 +35,18 @@ class ObjectStorageManagerTest {
 
     @Test
     @Order(1)
+    void putObject_success() {
+        assertDoesNotThrow(() -> storageManager.putObject(
+                OBJ_NAME,
+                "text/plain",
+                new ByteArrayInputStream(OBJ_CONTEXT.getBytes())));
+    }
+
+    @Test
+    @Order(2)
     void listObjects_success() {
-        List<String> objectSummaries = storageManager.listObjects("a1/", 10);
-        assertEquals(List.of("a1/firstwallpaperbetter.jpg", "a1/test.jpg"), objectSummaries);
+        List<String> objectSummaries = storageManager.listObjects("storage/", 10);
+        assertEquals(List.of(OBJ_NAME), objectSummaries);
     }
 
     @Test
@@ -47,15 +55,6 @@ class ObjectStorageManagerTest {
     void getObject_success() {
         byte[] object = storageManager.getObject(OBJ_NAME);
         assertEquals(OBJ_CONTEXT, new String(object, StandardCharsets.UTF_8));
-    }
-
-    @Test
-    @Order(2)
-    void putObject_success() {
-        assertDoesNotThrow(() -> storageManager.putObject(
-                OBJ_NAME,
-                "text/plain",
-                new ByteArrayInputStream(OBJ_CONTEXT.getBytes())));
     }
 
     @Test
