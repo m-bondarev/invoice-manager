@@ -11,6 +11,7 @@ resource "oci_artifacts_container_configuration" "container_configuration" {
 }
 
 resource "oci_container_instances_container_instance" "manager_container_instance" {
+  depends_on               = [oci_ons_notification_topic.export_invoice_manager_devops_notification]
   availability_domain      = data.oci_identity_availability_domains.ads.availability_domains[0]["name"]
   compartment_id           = var.compartment_ocid
   container_restart_policy = "ALWAYS"
@@ -22,7 +23,7 @@ resource "oci_container_instances_container_instance" "manager_container_instanc
       OCI_CLI_USER        = var.user_ocid,
       OCI_CLI_TENANCY     = var.tenancy_ocid,
       OCI_CLI_FINGERPRINT = var.fingerprint,
-      #      var.topic_id
+      OCI_TOPIC_ID        = oci_ons_notification_topic.export_invoice_manager_devops_notification.id
     }
     image_url                      = "${var.region}.ocir.io/frkogu3mhwjt/invoice-manager:latest"
     is_resource_principal_disabled = false
@@ -145,8 +146,8 @@ resource oci_core_instance manager-instance {
   }
   source_details {
     boot_volume_vpus_per_gb = "10"
-    source_id   = var.image_id
-    source_type = "image"
+    source_id               = var.image_id
+    source_type             = "image"
   }
   state = "RUNNING"
 }
