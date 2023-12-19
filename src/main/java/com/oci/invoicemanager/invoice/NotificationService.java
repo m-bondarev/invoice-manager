@@ -6,28 +6,28 @@ import com.oracle.bmc.ons.model.MessageDetails;
 import com.oracle.bmc.ons.requests.PublishMessageRequest;
 import com.oracle.bmc.ons.responses.PublishMessageResponse;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class NotificationService {
 
   @Value("${oci.notification.topicId}")
   private String topicId;
-  @Autowired
-  private NotificationDataPlaneClient client;
+
+  private final NotificationDataPlaneClient client;
 
   public PublishMessageResponse publishMessage(PublishMessage publishMessage) {
 
-    MessageDetails messageDetails = MessageDetails.builder()
-        .title(publishMessage.title())
-        .body(publishMessage.message())
+    final var messageDetails = MessageDetails.builder()
+        .title(putMessagesRequest.getPutMessagesDetails().getMessages().get(0).getContent())
+        .body(putMessagesRequest.getBody$().toString())
         .build();
 
-    PublishMessageRequest publishMessageRequest = PublishMessageRequest.builder()
+    final var publishMessageRequest = PublishMessageRequest.builder()
         .topicId(topicId)
         .messageDetails(messageDetails)
         .opcRequestId(UUID.randomUUID().toString())
