@@ -1,6 +1,6 @@
 package com.oci.invoicemanager.service;
 
-import com.oci.invoicemanager.controller.InvoiceController.PublishMessage;
+import com.oci.invoicemanager.data.PublishMessage;
 import com.oracle.bmc.ons.NotificationDataPlaneClient;
 import com.oracle.bmc.ons.model.CreateSubscriptionDetails;
 import com.oracle.bmc.ons.model.MessageDetails;
