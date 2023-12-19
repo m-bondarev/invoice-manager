@@ -8,6 +8,8 @@ import com.oracle.bmc.queue.requests.GetMessagesRequest;
 import com.oracle.bmc.queue.requests.PutMessagesRequest;
 import com.oracle.bmc.queue.responses.PutMessagesResponse;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,7 @@ public class InvoiceService {
   private final QueueClient queueClient;
   private final NotificationService notificationService;
   private final ObjectMapper objectMapper;
+  private final InvoiceDAO invoiceDAO;
 
   @Value("${oci.queue.ocid}")
   private String queueId;
@@ -64,4 +67,37 @@ public class InvoiceService {
 
     return messages.getGetMessages().toString();
   }
+
+    public List<InvoiceDto> getAllInvoices() {
+        return invoiceDAO.getAllInvoices()
+                .stream()
+                .map(invoiceEntity -> InvoiceDto.builder()
+                        .userId(invoiceEntity.getUserId())
+                        .description(invoiceEntity.getDescription())
+                        .status(invoiceEntity.getStatus())
+                        .build())
+                .collect(Collectors.toList());
+    }
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class InvoiceService {
+
+    @Autowired
+    private InvoiceDAO invoiceDAO;
+
+    public List<InvoiceDto> getAllInvoices() {
+        return invoiceDAO.getAllInvoices()
+                .stream()
+                .map(invoiceEntity -> InvoiceDto.builder()
+                        .userId(invoiceEntity.getUserId())
+                        .description(invoiceEntity.getDescription())
+                        .status(invoiceEntity.getStatus())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }

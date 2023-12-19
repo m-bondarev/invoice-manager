@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping(value = "/v1/invoices", produces = APPLICATION_JSON_VALUE)
@@ -36,4 +38,9 @@ public class InvoiceController {
   public String publishMessage(@RequestBody InvoiceDto invoiceDto) {
     return invoiceService.publish(invoiceDto).toString();
   }
+
+    @GetMapping("/invoices")
+    public List<InvoiceDto> getAllInvoices() {
+        return invoiceService.getAllInvoices();
+    }
 }

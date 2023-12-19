@@ -15,3 +15,17 @@ oci:
     dlqOcid: ocid1.queue.oc1.eu-frankfurt-1.amaaaaaabas6vyiaodmj6xvsrhossja7lgjggjz6npjb63ejgvaa736xhiva-dlq
     endpoint: https://cell-1.queue.messaging.eu-frankfurt-1.oci.oraclecloud.com
 
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@(description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=adb.eu-frankfurt-1.oraclecloud.com))(connect_data=(service_name=ga57d0421d38d7f_invoices_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+    username: ${OCI_DB_USER}
+    password: ${OCI_DB_PASSWORD}
+    driver-class-name: oracle.jdbc.OracleDriver
+    type: oracle.ucp.jdbc.PoolDataSource
+    oracleucp:
+      connection-factory-class-name: oracle.jdbc.pool.OracleDataSource
+      s-q-l-for-validate-connection: select * from dual
+      connection-pool-name: connectionPoolName1
+      initial-pool-size: 15
+      min-pool-size: 10
+      max-pool-size: 30
