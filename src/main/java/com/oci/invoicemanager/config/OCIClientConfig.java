@@ -25,14 +25,11 @@ public class OCIClientConfig {
 
   @Bean
   public AuthenticationDetailsProvider authenticationDetailsProvider(OCIClientProps clientProps) {
-
-    log.info(clientProps.toString());
-
     return SimpleAuthenticationDetailsProvider.builder()
         .tenantId(clientProps.tenancyId())
         .userId(clientProps.userId())
         .fingerprint(clientProps.fingerprint())
-        .privateKeySupplier(new StringPrivateKeySupplier(clientProps.privateKey()))
+        .privateKeySupplier(getKey(clientProps.privateKey()))
         .region(clientProps.region)
         .build();
   }

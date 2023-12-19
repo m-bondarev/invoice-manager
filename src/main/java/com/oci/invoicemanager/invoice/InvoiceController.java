@@ -2,8 +2,6 @@ package com.oci.invoicemanager.invoice;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.oracle.bmc.queue.QueueClient;
-import com.oracle.bmc.queue.requests.GetMessagesRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,38 +18,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class InvoiceController {
 
-  private final NotificationService notificationService;
-  private final QueueClient queueClient;
+  private final InvoiceService invoiceService;
 
   @GetMapping
   public String getAll() {
-    return "{}";
+    return invoiceService.getMessages();
   }
 
   @GetMapping(value = "/{id}")
   public String getById(
       @PathVariable final long id
   ) {
-    final var messages = queueClient.getMessages(GetMessagesRequest.builder()
-        .queueId("ocid1.queue.oc1.eu-frankfurt-1.amaaaaaabas6vyiaodmj6xvsrhossja7lgjggjz6npjb63ejgvaa736xhiva")
-        .build());
-
-    return messages.getGetMessages().toString();
+    return invoiceService.getMessages();
   }
 
   @PostMapping
-  public InvoiceDto create(
-      @RequestBody final InvoiceDto invoiceDto
-  ) {
-    return invoiceDto;
-  }
-
-  @PostMapping("/publishMessage")
-  public String publishMessage(@RequestBody PublishMessage publishMessage) {
-    return notificationService.publishMessage(publishMessage).toString();
-  }
-
-  public record PublishMessage(String message, String title) {
-
+  public String publishMessage(@RequestBody InvoiceDto invoiceDto) {
+    return invoiceService.publish(invoiceDto).toString();
   }
 }

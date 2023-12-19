@@ -20,6 +20,8 @@ jobs:
       OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
       OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
       OCI_CLI_COMPARTMENT_ID: ${{ secrets.OCI_CLI_COMPARTMENT_ID }}
+      OCI_DB_USER: ${{ secrets.OCI_DB_USER }}
+      OCI_DB_PASSWORD: ${{ secrets.OCI_DB_PASSWORD }}
       INSTANCE_OCID: ${{ secrets.INSTANCE_OCID }}
 
     steps:

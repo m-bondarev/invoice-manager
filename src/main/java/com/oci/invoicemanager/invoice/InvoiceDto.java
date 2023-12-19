@@ -13,5 +13,5 @@ public class InvoiceDto {
   LocalDate createdDate;
   LocalDate updatedDate;
   LocalDate endDate;
-  LocalDate status;
+  String status;
 }
