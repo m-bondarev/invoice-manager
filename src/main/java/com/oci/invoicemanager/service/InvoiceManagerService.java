@@ -1,6 +1,7 @@
 package com.oci.invoicemanager.service;
 
 import com.oci.invoicemanager.data.InvoiceDto;
+import com.oci.invoicemanager.data.PublishMessage;
 import com.oci.invoicemanager.data.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,13 @@ public class InvoiceManagerService {
     }
 
     public void createInvoice(InvoiceDto invoice) {
-        // save to queue
-        // save to storage
+        queueService.publish(invoice);
+        objectStorageService.putTextFile(invoice);
         // save to db
-        // notificationService.publishMessage(putMessagesRequest);
+        notificationService.publishMessage(new PublishMessage("New invoice", invoice.description()));
+    }
+
+    public void getInvoice() {
+        
     }
 }

@@ -1,5 +1,7 @@
 package com.oci.invoicemanager.objstorage;
 
+import com.oci.invoicemanager.data.InvoiceDto;
+import com.oci.invoicemanager.data.InvoiceStatus;
 import com.oci.invoicemanager.service.ObjectStorageService;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import lombok.SneakyThrows;
@@ -7,9 +9,10 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,10 +46,15 @@ class ObjectStorageServiceTest {
     @Test
     @Order(2)
     void putObject_success() {
-        assertDoesNotThrow(() -> storageManager.putObject(
-                OBJ_NAME,
-                "text/plain",
-                new ByteArrayInputStream(OBJ_CONTEXT.getBytes())));
+        assertDoesNotThrow(() -> storageManager.putTextFile(
+                new InvoiceDto(
+                        UUID.randomUUID(),
+                        UUID.randomUUID(),
+                        OBJ_CONTEXT,
+                        LocalDate.now(),
+                        LocalDate.now(),
+                        LocalDate.now(),
+                        InvoiceStatus.NEW)));
     }
 
     @Test

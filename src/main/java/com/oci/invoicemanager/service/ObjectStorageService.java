@@ -1,5 +1,6 @@
 package com.oci.invoicemanager.service;
 
+import com.oci.invoicemanager.data.InvoiceDto;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.objectstorage.model.ObjectSummary;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class ObjectStorageService {
+    public static final String TEXT_CONTENT = "text/plain";
     private final AuthenticationDetailsProvider provider;
     @Value("${oci.ostorage.nameSpace}")
     private String namespace;
@@ -78,7 +81,11 @@ public class ObjectStorageService {
         return new byte[]{};
     }
 
-    public void putObject(String name, String contentType, InputStream body) {
+    public void putTextFile(InvoiceDto invoice){
+        putObject(invoice.invoiceId().toString(), TEXT_CONTENT, new ByteArrayInputStream(invoice.description().getBytes()));
+    }
+
+    private void putObject(String name, String contentType, InputStream body) {
         try (ObjectStorageClient client = ObjectStorageClient.builder()
                 .build(provider)) {
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()

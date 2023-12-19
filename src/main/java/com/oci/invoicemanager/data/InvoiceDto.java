@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public record InvoiceDto(
+        UUID invoiceId,
         UUID userId,
         String description,
         LocalDate createdDate,
