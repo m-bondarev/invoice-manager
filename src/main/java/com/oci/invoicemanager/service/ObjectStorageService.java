@@ -1,6 +1,5 @@
-package com.oci.invoicemanager.objstorage;
+package com.oci.invoicemanager.service;
 
-import com.oci.invoicemanager.config.OCIClientConfig.OCIClientProps;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.objectstorage.model.ObjectSummary;
@@ -25,7 +24,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class ObjectStorageManager {
+public class ObjectStorageService {
     private final AuthenticationDetailsProvider provider;
     @Value("${oci.ostorage.nameSpace}")
     private final String namespace;

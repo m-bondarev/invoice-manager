@@ -7,6 +7,7 @@ oci:
     privateKey: ${OCI_CLI_KEY_CONTENT}
   notification:
     topicId: ocid1.onstopic.oc1.eu-frankfurt-1.amaaaaaabas6vyiamdvbdjqfpkekmvc6mzemc7gsmxcty6wlykauwfzz5tva
+    compartmentId: ocid1.compartment.oc1..aaaaaaaa6o6arsldtxyrzyokcuqnsoao6rj7tlhkihlkorgxp42sr56njafq
   ostorage:
     nameSpace: frkogu3mhwjt
     bucketName: invoice_manager_bucket

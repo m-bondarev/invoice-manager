@@ -1,6 +1,6 @@
 package com.oci.invoicemanager.objstorage;
 
-import com.oci.invoicemanager.config.OCIClientConfig.OCIClientProps;
+import com.oci.invoicemanager.service.ObjectStorageService;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.*;
@@ -18,12 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
-class ObjectStorageManagerTest {
+class ObjectStorageServiceTest {
     private static final String OBJ_NAME = "a1/test.txt";
     private static final String OBJ_CONTEXT = "Hello OCI";
     @Autowired
     private AuthenticationDetailsProvider provider;
-    private ObjectStorageManager storageManager;
+    private ObjectStorageService storageManager;
     @Value("${oci.ostorage.nameSpace}")
     private String namespace;
     @Value("${oci.ostorage.bucketName}")
@@ -31,7 +31,7 @@ class ObjectStorageManagerTest {
 
     @BeforeAll
     public void init() {
-        storageManager = new ObjectStorageManager(provider, namespace, bucketName);
+        storageManager = new ObjectStorageService(provider, namespace, bucketName);
     }
 
     @Test
