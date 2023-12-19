@@ -29,7 +29,7 @@ public class OCIClientConfig {
         .tenantId(clientProps.tenancyId())
         .userId(clientProps.userId())
         .fingerprint(clientProps.fingerprint())
-        .privateKeySupplier(getKey(clientProps.privateKey()))
+        .privateKeySupplier(new StringPrivateKeySupplier(clientProps.privateKey()))
         .region(clientProps.region)
         .build();
   }
