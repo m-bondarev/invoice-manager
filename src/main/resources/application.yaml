@@ -11,4 +11,8 @@ oci:
   ostorage:
     nameSpace: frkogu3mhwjt
     bucketName: invoice_manager_bucket
+  queue:
+    ocid: ocid1.queue.oc1.eu-frankfurt-1.amaaaaaabas6vyiaodmj6xvsrhossja7lgjggjz6npjb63ejgvaa736xhiva
+    dlqOcid: ocid1.queue.oc1.eu-frankfurt-1.amaaaaaabas6vyiaodmj6xvsrhossja7lgjggjz6npjb63ejgvaa736xhiva-dlq
+    endpoint: https://cell-1.queue.messaging.eu-frankfurt-1.oci.oraclecloud.com
 
