@@ -105,8 +105,7 @@ jobs:
       uses: garygrossgarten/github-action-ssh@release
       with:
         command: |
-          sudo docker stop fra.ocir.io/frkogu3mhwjt/invoice-manager
-          sudo docker rm $(sudo docker ps -f "name=fra.ocir.io/frkogu3mhwjt/invoice-manager")
+          sudo docker rm $(sudo docker stop $(sudo docker ps -a --format "{{.Names}}"))
           sudo docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}" fra.ocir.io
           sudo docker pull fra.ocir.io/frkogu3mhwjt/invoice-manager
           sudo docker images
