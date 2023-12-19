@@ -20,6 +20,7 @@ jobs:
       OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
       OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
       OCI_CLI_COMPARTMENT_ID: ${{ secrets.OCI_CLI_COMPARTMENT_ID }}
+      OCI_CLI_INSTANCE_PRIVATE_KEY: ${{ secrets.OCI_CLI_INSTANCE_PRIVATE_KEY }}
       OCI_DB_USER: ${{ secrets.OCI_DB_USER }}
       OCI_DB_PASSWORD: ${{ secrets.OCI_DB_PASSWORD }}
       INSTANCE_OCID: ${{ secrets.INSTANCE_OCID }}
@@ -76,7 +77,7 @@ jobs:
       uses: oracle-actions/run-oci-cli-command@v1.1.1
       id: find-instances
       with:
-        command: 'oci compute instance list --display-name oci-ci-cd-instance --raw-output --compartment-id ${{ env.OCI_CLI_TENANCY }}'
+        command: 'oci compute instance list --display-name oci-ci-cd-instance --raw-output --compartment-id ${{ env.OCI_CLI_COMPARTMENT_ID }}'
         query: 'data[0].{id: \"id\"}'
 
     - name: Set env
@@ -91,7 +92,7 @@ jobs:
         silent: false
 
     - name: Set env
-      run: echo "INSTANCE_IP=$(echo ${{ steps.find-instance-ip.outputs.output }} | jq .ip )" >> $GITHUB_ENV
+      run: echo "INSTANCE_IP=$(echo ${{ steps.find-instance-ip.outputs.output }} | jq -r .ip )" >> $GITHUB_ENV
 
     - name: Wait for SSH
       run: |
@@ -103,19 +104,10 @@ jobs:
     - name: Ssh to oracle to start docker container
       uses: garygrossgarten/github-action-ssh@release
       with:
-        command: whoami
+        command: |
+          sudo docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}" fra.ocir.io
+          sudo docker pull fra.ocir.io/frkogu3mhwjt/invoice-manager
+          sudo docker images
         host: ${{ env.INSTANCE_IP }}
         username: ubuntu
-        privateKey: ${{ env.OCI_CLI_KEY_CONTENT}}
-
-#    - name: Install ssh keys
-#      run: |
-#        install -m 600 -D /dev/null ~/.ssh/id_rsa
-#        echo "${{ env.OCI_CLI_KEY_CONTENT }}" > ~/.ssh/id_rsa
-#        ssh-keyscan -H ${{ secrets.INSTANCE_IP }} > ~/.ssh/known_hosts
-#
-#    - name: Connect and pull
-#      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && docker compose pull && docker compose up -d && exit"
-#
-#    - name: Cleanup
-#      run: rm -rf ~/.ssh
+        privateKey: ${{ env.OCI_CLI_INSTANCE_PRIVATE_KEY}}
