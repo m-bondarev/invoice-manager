@@ -1,6 +1,5 @@
 package com.oci.invoicemanager.objstorage;
 
-import com.oci.invoicemanager.config.OCIClientConfig.OCIClientProps;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.objectstorage.model.ObjectSummary;
@@ -12,103 +11,105 @@ import com.oracle.bmc.objectstorage.responses.DeleteObjectResponse;
 import com.oracle.bmc.objectstorage.responses.GetObjectResponse;
 import com.oracle.bmc.objectstorage.responses.ListObjectsResponse;
 import com.oracle.bmc.objectstorage.responses.PutObjectResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jvnet.hk2.annotations.Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class ObjectStorageManager {
-    private final AuthenticationDetailsProvider provider;
-    @Value("${oci.ostorage.nameSpace}")
-    private final String namespace;
-    @Value("${oci.ostorage.bucketName}")
-    private final String bucketName;
 
-    public List<String> listObjects(String prefix, Integer limit) {
+  private final AuthenticationDetailsProvider provider;
+  @Value("${oci.ostorage.nameSpace}")
+  private final String namespace;
+  @Value("${oci.ostorage.bucketName}")
+  private final String bucketName;
 
-        try (ObjectStorageClient client = ObjectStorageClient.builder()
-                .build(provider)) {
+  public List<String> listObjects(String prefix, Integer limit) {
 
-            ListObjectsRequest listObjectsRequest = ListObjectsRequest.builder()
-                    .namespaceName(namespace)
-                    .bucketName(bucketName)
-                    .prefix(prefix)
-                    .limit(limit)
-                    .build();
+    try (ObjectStorageClient client = ObjectStorageClient.builder()
+        .build(provider)) {
 
-            ListObjectsResponse response = client.listObjects(listObjectsRequest);
+      ListObjectsRequest listObjectsRequest = ListObjectsRequest.builder()
+          .namespaceName(namespace)
+          .bucketName(bucketName)
+          .prefix(prefix)
+          .limit(limit)
+          .build();
 
-            if (HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
-                log.warn("List Objects err with status code %s".formatted(response.get__httpStatusCode__()));
-                return List.of();
-            }
+      ListObjectsResponse response = client.listObjects(listObjectsRequest);
 
-            return response.getListObjects().getObjects()
-                    .stream().map(ObjectSummary::getName).toList();
-        }
+      if (HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
+        log.warn(
+            "List Objects err with status code %s".formatted(response.get__httpStatusCode__()));
+        return List.of();
+      }
+
+      return response.getListObjects().getObjects()
+          .stream().map(ObjectSummary::getName).toList();
     }
+  }
 
-    public byte[] getObject(String objName) {
-        try (ObjectStorageClient client = ObjectStorageClient.builder()
-                .build(provider)) {
-            GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                    .namespaceName(namespace)
-                    .bucketName(bucketName)
-                    .objectName(objName)
-                    .build();
+  public byte[] getObject(String objName) {
+    try (ObjectStorageClient client = ObjectStorageClient.builder()
+        .build(provider)) {
+      GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+          .namespaceName(namespace)
+          .bucketName(bucketName)
+          .objectName(objName)
+          .build();
 
-            GetObjectResponse response = client.getObject(getObjectRequest);
+      GetObjectResponse response = client.getObject(getObjectRequest);
 
-            if (!HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
-                return response.getInputStream().readAllBytes();
-            }
+      if (!HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
+        return response.getInputStream().readAllBytes();
+      }
 
-            log.warn("Get Object err with status code %s".formatted(response.get__httpStatusCode__()));
-        } catch (IOException e) {
-            log.warn("OOps", e);
-        }
-        return new byte[]{};
+      log.warn("Get Object err with status code %s".formatted(response.get__httpStatusCode__()));
+    } catch (IOException e) {
+      log.warn("OOps", e);
     }
+    return new byte[]{};
+  }
 
-    public void putObject(String name, String contentType, InputStream body) {
-        try (ObjectStorageClient client = ObjectStorageClient.builder()
-                .build(provider)) {
-            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                    .namespaceName(namespace)
-                    .bucketName(bucketName)
-                    .objectName(name)
-                    .contentType(contentType)
-                    .body$(body)
-                    .build();
+  public void putObject(String name, String contentType, InputStream body) {
+    try (ObjectStorageClient client = ObjectStorageClient.builder()
+        .build(provider)) {
+      PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+          .namespaceName(namespace)
+          .bucketName(bucketName)
+          .objectName(name)
+          .contentType(contentType)
+          .body$(body)
+          .build();
 
-            PutObjectResponse response = client.putObject(putObjectRequest);
-            if (HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
-                log.warn("Put Object err with status code %s".formatted(response.get__httpStatusCode__()));
-            }
-        }
+      PutObjectResponse response = client.putObject(putObjectRequest);
+      if (HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
+        log.warn("Put Object err with status code %s".formatted(response.get__httpStatusCode__()));
+      }
     }
+  }
 
-    public void deleteObject(String name) {
-        try (ObjectStorageClient client = ObjectStorageClient.builder()
-                .build(provider)) {
-            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
-                    .namespaceName(namespace)
-                    .bucketName(bucketName)
-                    .objectName(name)
-                    .build();
+  public void deleteObject(String name) {
+    try (ObjectStorageClient client = ObjectStorageClient.builder()
+        .build(provider)) {
+      DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+          .namespaceName(namespace)
+          .bucketName(bucketName)
+          .objectName(name)
+          .build();
 
-            DeleteObjectResponse response = client.deleteObject(deleteObjectRequest);
-            if (HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
-                log.warn("Delete Objects err with status code %s".formatted(response.get__httpStatusCode__()));
-            }
-        }
+      DeleteObjectResponse response = client.deleteObject(deleteObjectRequest);
+      if (HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
+        log.warn(
+            "Delete Objects err with status code %s".formatted(response.get__httpStatusCode__()));
+      }
     }
+  }
 }

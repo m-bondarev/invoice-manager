@@ -1,66 +1,70 @@
 package com.oci.invoicemanager.objstorage;
 
-import com.oci.invoicemanager.config.OCIClientConfig.OCIClientProps;
-import com.oracle.bmc.auth.AuthenticationDetailsProvider;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 class ObjectStorageManagerTest {
-    private static final String OBJ_NAME = "a1/test.txt";
-    private static final String OBJ_CONTEXT = "Hello OCI";
-    @Autowired
-    private AuthenticationDetailsProvider provider;
-    private ObjectStorageManager storageManager;
-    @Value("${oci.ostorage.nameSpace}")
-    private String namespace;
-    @Value("${oci.ostorage.bucketName}")
-    private String bucketName;
 
-    @BeforeAll
-    public void init() {
-        storageManager = new ObjectStorageManager(provider, namespace, bucketName);
-    }
+  private static final String OBJ_NAME = "a1/test.txt";
+  private static final String OBJ_CONTEXT = "Hello OCI";
+  @Autowired
+  private AuthenticationDetailsProvider provider;
+  private ObjectStorageManager storageManager;
+  @Value("${oci.ostorage.nameSpace}")
+  private String namespace;
+  @Value("${oci.ostorage.bucketName}")
+  private String bucketName;
 
-    @Test
-    @Order(1)
-    void listObjects_success() {
-        List<String> objectSummaries = storageManager.listObjects("a1/", 10);
-        assertEquals(List.of("a1/firstwallpaperbetter.jpg", "a1/test.jpg"), objectSummaries);
-    }
+  @BeforeAll
+  public void init() {
+    storageManager = new ObjectStorageManager(provider, namespace, bucketName);
+  }
 
-    @Test
-    @SneakyThrows
-    @Order(3)
-    void getObject_success() {
-        byte[] object = storageManager.getObject(OBJ_NAME);
-        assertEquals(OBJ_CONTEXT, new String(object, StandardCharsets.UTF_8));
-    }
+  @Test
+  @Order(1)
+  void listObjects_success() {
+    List<String> objectSummaries = storageManager.listObjects("a1/", 10);
+    assertEquals(List.of("a1/firstwallpaperbetter.jpg", "a1/test.jpg"), objectSummaries);
+  }
 
-    @Test
-    @Order(2)
-    void putObject_success() {
-        assertDoesNotThrow(() -> storageManager.putObject(
-                OBJ_NAME,
-                "text/plain",
-                new ByteArrayInputStream(OBJ_CONTEXT.getBytes())));
-    }
+  @Test
+  @SneakyThrows
+  @Order(3)
+  void getObject_success() {
+    byte[] object = storageManager.getObject(OBJ_NAME);
+    assertEquals(OBJ_CONTEXT, new String(object, StandardCharsets.UTF_8));
+  }
 
-    @Test
-    @Order(4)
-    void deleteObject_success() {
-        assertDoesNotThrow(() -> storageManager.deleteObject(OBJ_NAME));
-    }
+  @Test
+  @Order(2)
+  void putObject_success() {
+    assertDoesNotThrow(() -> storageManager.putObject(
+        OBJ_NAME,
+        "text/plain",
+        new ByteArrayInputStream(OBJ_CONTEXT.getBytes())));
+  }
+
+  @Test
+  @Order(4)
+  void deleteObject_success() {
+    assertDoesNotThrow(() -> storageManager.deleteObject(OBJ_NAME));
+  }
 }
