@@ -1,8 +1,6 @@
 package com.oci.invoicemanager.controller;
 
-import com.oci.invoicemanager.data.InvoiceDto;
-import com.oci.invoicemanager.data.InvoiceStatus;
-import com.oci.invoicemanager.data.PublishMessage;
+import com.oci.invoicemanager.data.*;
 import com.oci.invoicemanager.service.InvoiceManagerService;
 import com.oci.invoicemanager.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -20,33 +18,26 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping(value = "/v1/invoices", produces = APPLICATION_JSON_VALUE)
 public class InvoiceManagerController {
     private final InvoiceManagerService invoiceManagerService;
-    private final NotificationService notificationService;
 
     @GetMapping
-    public List<InvoiceDto> getAll(
-            @RequestParam Optional<String> userId,
+    public List<InvoiceEntity> getAll(
+            @RequestParam Optional<Long> userId,
             @RequestParam Optional<InvoiceStatus> invoiceStatus) {
         return invoiceManagerService.getAllInvoices(userId, invoiceStatus);
     }
 
     @GetMapping(value = "/{invoiceId}")
-    public String getById(@PathVariable String invoiceId) {
+    public InvoiceDescription getById(@PathVariable Long invoiceId) {
         return invoiceManagerService.getInvoice(invoiceId);
     }
 
     @PostMapping
-    public InvoiceDto create(@RequestBody InvoiceDto invoiceDto, @RequestParam("file") MultipartFile file, ModelMap modelMap) {
-        invoiceManagerService.createInvoice(invoiceDto, file);
-        return invoiceDto;
+    public InvoiceDescription create(@RequestBody InvoiceDto invoiceDto, @RequestParam("file") MultipartFile file, ModelMap modelMap) {
+        return invoiceManagerService.createInvoice(invoiceDto, file);
     }
 
     @DeleteMapping(value = "/{invoiceId}")
-    public void delete(@PathVariable String invoiceId) {
+    public void delete(@PathVariable Long invoiceId) {
         invoiceManagerService.delete(invoiceId);
-    }
-
-    @PostMapping("/publishMessage")
-    public String publishMessage(@RequestBody PublishMessage publishMessage) {
-        return notificationService.publishMessage(publishMessage).toString();
     }
 }

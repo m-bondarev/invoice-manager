@@ -1,11 +1,19 @@
 package com.oci.invoicemanager.data;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Builder;
 
+import java.util.List;
+
+@Entity
 @Builder
+@Table(name = "invoices")
 public record InvoiceEntity(
-        Long id,
-        Long userId,
+        @Id Long id,
+        UserEntity user,
         String description,
-        InvoiceStatus status) {
+        InvoiceStatus status,
+        List<FileEntity> files) {
 }

@@ -1,15 +1,13 @@
 package com.oci.invoicemanager.service;
 
-import com.oci.invoicemanager.data.InvoiceDto;
-import com.oci.invoicemanager.data.InvoiceStatus;
-import com.oci.invoicemanager.data.PublishMessage;
+import com.oci.invoicemanager.data.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -17,42 +15,50 @@ public class InvoiceManagerService {
     private final NotificationService notificationService;
     private final ObjectStorageService objectStorageService;
     private final QueueService queueService;
-    private final InvoiceDAO invoiceDAO;
+    private final InvoiceEntityRepository repository;
 
-    public List<InvoiceDto> getAllInvoices(Optional<String> userId, Optional<InvoiceStatus> invoiceStatus) {
-        List<InvoiceDto> invoices = invoiceDAO.getAllInvoices()
-                .stream()
-                .map(invoiceEntity -> InvoiceDto.builder()
-                        .userId(invoiceEntity.userId())
-                        .description(invoiceEntity.description())
-                        .status(invoiceEntity.status())
-                        .build()).toList();
-         objectStorageService.listObjects(invoices.invoiceId(), 50);
-        // create full descriptions representation
-        return List.of();
+    public List<InvoiceEntity> getAllInvoices(Optional<Long> userId, Optional<InvoiceStatus> invoiceStatus) {
+        return repository.findAllByUserIdAndStatus(userId, invoiceStatus);
     }
 
-    public String getInvoice(String invoiceId) {
-//        InvoiceEntity invoice = new InvoiceEntity(); // get from db
-//        List<String> descriptions = invoice.filePaths().stream().map(objectStorageService::getTestFile).toList();
-        // create full descriptions representation
-        return "";
+    public InvoiceDescription getInvoice(Long invoiceId) {
+        InvoiceEntity invoice = repository.findById(invoiceId).orElse(null);
+        if (Objects.isNull(invoice)) return null;
+
+        List<String> descriptions = invoice.files().stream()
+                .map(file -> objectStorageService.getTextFile("%s/%s".formatted(invoice.id(), file.url())))
+                .toList();
+        return toDescription(invoice, descriptions);
     }
 
-    public void createInvoice(InvoiceDto invoice, MultipartFile file) {
+    public InvoiceDescription createInvoice(InvoiceDto invoice, MultipartFile file) {
         queueService.publish(invoice);
 
-        UUID fileId = UUID.randomUUID();
-        String fileName = "%s/%s".formatted(invoice.invoiceId(), fileId);
-        objectStorageService.putTextFile(fileName, file);
-
-        // save to db
+        InvoiceEntity saved = repository.save(InvoiceEntity.builder()
+                .user(UserEntity.builder().id(invoice.userId()).build())
+                .status(invoice.status())
+                .files(List.of())
+                .build());
+        String filePath = objectStorageService.putTextFile(saved.id(), file);
 
         notificationService.publishMessage(new PublishMessage("New invoice", invoice.description()));
+
+        return toDescription(saved, List.of());
     }
 
-    public void delete(String invoiceId) {
-        // delete from db
-//         objectStorageService.deleteObject(fileId);
+    public void delete(Long invoiceId) {
+        repository.deleteById(invoiceId);
+        objectStorageService.deleteObject("%s/".formatted(invoiceId));
+    }
+
+    private InvoiceDescription toDescription(InvoiceEntity invoice, List<String> descriptions) {
+        return InvoiceDescription.builder()
+                .id(invoice.id())
+                .userName(invoice.user().getName())
+                .userSurname(invoice.user().getSurname())
+                .description(invoice.description())
+                .status(invoice.status())
+                .additions(descriptions)
+                .build();
     }
 }

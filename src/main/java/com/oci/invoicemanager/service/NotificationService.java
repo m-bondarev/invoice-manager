@@ -51,7 +51,16 @@ public class NotificationService {
         CreateSubscriptionRequest createSubscriptionRequest = CreateSubscriptionRequest.builder()
                 .createSubscriptionDetails(createSubscriptionDetails)
                 .opcRequestId(UUID.randomUUID().toString()).build();
-
+        // collect subscriptionId
         return client.createSubscription(createSubscriptionRequest);
     }
+
+//    public DeleteSubscriptionResponse deleteSubscription(String email) {
+//        DeleteSubscriptionRequest deleteSubscriptionDetails = DeleteSubscriptionRequest.builder()
+//                .opcRequestId(UUID.randomUUID().toString())
+//                .subscriptionId(subscriptionId)
+//                .build();
+//
+//        return client.deleteSubscription(deleteSubscriptionDetails);
+//    }
 }

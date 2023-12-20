@@ -1,6 +1,5 @@
 package com.oci.invoicemanager.service;
 
-import com.oci.invoicemanager.data.InvoiceDto;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.objectstorage.model.ObjectSummary;
@@ -59,7 +58,7 @@ public class ObjectStorageService {
         }
     }
 
-    public String getTestFile(String objName) {
+    public String getTextFile(String objName) {
         try (ObjectStorageClient client = ObjectStorageClient.builder()
                 .build(provider)) {
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()
@@ -71,7 +70,7 @@ public class ObjectStorageService {
             GetObjectResponse response = client.getObject(getObjectRequest);
 
             if (!HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
-                return  new String(response.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+                return new String(response.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
             }
 
             throw new IllegalStateException("Get Object err with status code %s".formatted(response.get__httpStatusCode__()));
@@ -80,33 +79,33 @@ public class ObjectStorageService {
         }
     }
 
-    public void putTextFile(String fileName, MultipartFile file) {
+    public String putTextFile(Long invoiceId, MultipartFile file) {
         try (ObjectStorageClient client = ObjectStorageClient.builder()
                 .build(provider)) {
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .namespaceName(namespace)
                     .bucketName(bucketName)
-                    .objectName(fileName)
+                    .objectName("%s/%s".formatted(invoiceId, file.getName()))
                     .contentType(TEXT_CONTENT)
                     .body$(new ByteArrayInputStream(file.getBytes()))
                     .build();
-
             PutObjectResponse response = client.putObject(putObjectRequest);
             if (HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
                 throw new IllegalStateException("Put Object err with status code %s".formatted(response.get__httpStatusCode__()));
             }
+            return file.getName();
         } catch (IOException e) {
             throw new IllegalStateException("OOps", e);
         }
     }
 
-    public void deleteObject(String name) {
+    public void deleteObject(String prefix) {
         try (ObjectStorageClient client = ObjectStorageClient.builder()
                 .build(provider)) {
             DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
                     .namespaceName(namespace)
                     .bucketName(bucketName)
-                    .objectName(name)
+                    .objectName(prefix)
                     .build();
 
             DeleteObjectResponse response = client.deleteObject(deleteObjectRequest);
