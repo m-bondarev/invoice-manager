@@ -8,6 +8,8 @@ import com.oracle.bmc.queue.requests.GetMessagesRequest;
 import com.oracle.bmc.queue.requests.PutMessagesRequest;
 import com.oracle.bmc.queue.responses.PutMessagesResponse;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -20,48 +22,60 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class InvoiceService {
 
-  private final QueueClient queueClient;
-  private final NotificationService notificationService;
-  private final ObjectMapper objectMapper;
+    private final QueueClient queueClient;
+    private final NotificationService notificationService;
+    private final ObjectMapper objectMapper;
+    private final InvoiceDAO invoiceDAO;
 
-  @Value("${oci.queue.ocid}")
-  private String queueId;
+    @Value("${oci.queue.ocid}")
+    private String queueId;
 
-  @SneakyThrows
-  public PutMessagesResponse publish(
-      final InvoiceDto invoiceDto
-  ) {
-    log.info("Publishing message {}", invoiceDto.getUserId());
+    @SneakyThrows
+    public PutMessagesResponse publish(
+            final InvoiceDto invoiceDto
+    ) {
+        log.info("Publishing message {}", invoiceDto.getUserId());
 
-    final var putMessagesDetailsEntry = PutMessagesDetailsEntry.builder()
-        .content(objectMapper.writeValueAsString(invoiceDto))
-        .build();
+        final var putMessagesDetailsEntry = PutMessagesDetailsEntry.builder()
+                .content(objectMapper.writeValueAsString(invoiceDto))
+                .build();
 
-    final var putMessagesDetails = PutMessagesDetails.builder()
-        .messages(List.of(putMessagesDetailsEntry))
-        .build();
+        final var putMessagesDetails = PutMessagesDetails.builder()
+                .messages(List.of(putMessagesDetailsEntry))
+                .build();
 
-    final var putMessagesRequest = PutMessagesRequest.builder()
-        .queueId(queueId)
-        .body$(putMessagesDetails)
-        .build();
+        final var putMessagesRequest = PutMessagesRequest.builder()
+                .queueId(queueId)
+                .body$(putMessagesDetails)
+                .build();
 
 //    save to storage
 
 //    save to db
 
-    notificationService.publishMessage(putMessagesRequest);
+        notificationService.publishMessage(putMessagesRequest);
 
-    return queueClient.putMessages(putMessagesRequest);
-  }
+        return queueClient.putMessages(putMessagesRequest);
+    }
 
-  public String getMessages() {
-    log.info("Retrieving messages");
+    public String getMessages() {
+        log.info("Retrieving messages");
 
-    final var messages = queueClient.getMessages(GetMessagesRequest.builder()
-        .queueId(queueId)
-        .build());
+        final var messages = queueClient.getMessages(GetMessagesRequest.builder()
+                .queueId(queueId)
+                .build());
 
-    return messages.getGetMessages().toString();
-  }
+        return messages.getGetMessages().toString();
+    }
+
+    public List<InvoiceDto> getAllInvoices() {
+        return invoiceDAO.getAllInvoices()
+                .stream()
+                .map(invoiceEntity -> InvoiceDto.builder()
+                        .userId(invoiceEntity.getUserId())
+                        .description(invoiceEntity.getDescription())
+                        .status(invoiceEntity.getStatus())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
