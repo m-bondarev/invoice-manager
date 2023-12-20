@@ -23,7 +23,7 @@ public class InvoiceManagerController {
     private final NotificationService notificationService;
 
     @GetMapping
-    public List<String> getAll(
+    public List<InvoiceDto> getAll(
             @RequestParam Optional<String> userId,
             @RequestParam Optional<InvoiceStatus> invoiceStatus) {
         return invoiceManagerService.getAllInvoices(userId, invoiceStatus);

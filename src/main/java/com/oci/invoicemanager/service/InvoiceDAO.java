@@ -1,5 +1,6 @@
-package com.oci.invoicemanager.invoice;
+package com.oci.invoicemanager.service;
 
+import com.oci.invoicemanager.data.InvoiceEntity;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;

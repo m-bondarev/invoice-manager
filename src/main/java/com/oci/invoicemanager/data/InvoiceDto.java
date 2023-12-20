@@ -1,11 +1,14 @@
 package com.oci.invoicemanager.data;
 
+import lombok.Builder;
+
 import java.time.LocalDate;
 import java.util.UUID;
 
+@Builder
 public record InvoiceDto(
         UUID invoiceId,
-        UUID userId,
+        Long userId,
         String description,
         LocalDate createdDate,
         LocalDate updatedDate,
