@@ -17,10 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
@@ -49,9 +50,8 @@ public class ObjectStorageService {
             ListObjectsResponse response = client.listObjects(listObjectsRequest);
 
             if (HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
-                log.warn(
+                throw new IllegalStateException(
                         "List Objects err with status code %s".formatted(response.get__httpStatusCode__()));
-                return List.of();
             }
 
             return response.getListObjects().getObjects()
@@ -59,7 +59,7 @@ public class ObjectStorageService {
         }
     }
 
-    public byte[] getObject(String objName) {
+    public String getTestFile(String objName) {
         try (ObjectStorageClient client = ObjectStorageClient.builder()
                 .build(provider)) {
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()
@@ -71,35 +71,32 @@ public class ObjectStorageService {
             GetObjectResponse response = client.getObject(getObjectRequest);
 
             if (!HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
-                return response.getInputStream().readAllBytes();
+                return  new String(response.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
             }
 
-            log.warn("Get Object err with status code %s".formatted(response.get__httpStatusCode__()));
+            throw new IllegalStateException("Get Object err with status code %s".formatted(response.get__httpStatusCode__()));
         } catch (IOException e) {
-            log.warn("OOps", e);
+            throw new IllegalStateException("OOps", e);
         }
-        return new byte[]{};
     }
 
-    public void putTextFile(InvoiceDto invoice){
-        putObject(invoice.invoiceId().toString(), TEXT_CONTENT, new ByteArrayInputStream(invoice.description().getBytes()));
-    }
-
-    private void putObject(String name, String contentType, InputStream body) {
+    public void putTextFile(String fileName, MultipartFile file) {
         try (ObjectStorageClient client = ObjectStorageClient.builder()
                 .build(provider)) {
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .namespaceName(namespace)
                     .bucketName(bucketName)
-                    .objectName(name)
-                    .contentType(contentType)
-                    .body$(body)
+                    .objectName(fileName)
+                    .contentType(TEXT_CONTENT)
+                    .body$(new ByteArrayInputStream(file.getBytes()))
                     .build();
 
             PutObjectResponse response = client.putObject(putObjectRequest);
             if (HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
-                log.warn("Put Object err with status code %s".formatted(response.get__httpStatusCode__()));
+                throw new IllegalStateException("Put Object err with status code %s".formatted(response.get__httpStatusCode__()));
             }
+        } catch (IOException e) {
+            throw new IllegalStateException("OOps", e);
         }
     }
 
@@ -114,7 +111,7 @@ public class ObjectStorageService {
 
             DeleteObjectResponse response = client.deleteObject(deleteObjectRequest);
             if (HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
-                log.warn(
+                throw new IllegalStateException(
                         "Delete Objects err with status code %s".formatted(response.get__httpStatusCode__()));
             }
         }

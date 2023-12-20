@@ -39,7 +39,7 @@ class ObjectStorageServiceTest {
     @SneakyThrows
     @Order(3)
     void getObject_success() {
-        byte[] object = storageManager.getObject(OBJ_NAME);
+        byte[] object = storageManager.getTestFile(OBJ_NAME);
         assertEquals(OBJ_CONTEXT, new String(object, StandardCharsets.UTF_8));
     }
 

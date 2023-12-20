@@ -6,13 +6,12 @@ import com.oracle.bmc.ons.model.CreateSubscriptionDetails;
 import com.oracle.bmc.ons.model.MessageDetails;
 import com.oracle.bmc.ons.requests.CreateSubscriptionRequest;
 import com.oracle.bmc.ons.requests.PublishMessageRequest;
+import com.oracle.bmc.ons.responses.CreateSubscriptionResponse;
 import com.oracle.bmc.ons.responses.PublishMessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -41,7 +40,7 @@ public class NotificationService {
         return client.publishMessage(publishMessageRequest);
     }
 
-    public boolean createSubscription(String email) {
+    public CreateSubscriptionResponse createSubscription(String email) {
         CreateSubscriptionDetails createSubscriptionDetails = CreateSubscriptionDetails.builder()
                 .topicId(topicId)
                 .compartmentId(compartmentId)
@@ -53,8 +52,6 @@ public class NotificationService {
                 .createSubscriptionDetails(createSubscriptionDetails)
                 .opcRequestId(UUID.randomUUID().toString()).build();
 
-        return Objects.requireNonNull(HttpStatus.resolve(
-                client.createSubscription(createSubscriptionRequest)
-                        .get__httpStatusCode__())).is2xxSuccessful();
+        return client.createSubscription(createSubscriptionRequest);
     }
 }
