@@ -1,6 +1,5 @@
 package com.oci.invoicemanager.data;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -16,6 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "users")
 public class UserEntity {
+
     @Id
     private Long id;
     private String name;

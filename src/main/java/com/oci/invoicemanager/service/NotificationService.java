@@ -8,11 +8,10 @@ import com.oracle.bmc.ons.requests.CreateSubscriptionRequest;
 import com.oracle.bmc.ons.requests.PublishMessageRequest;
 import com.oracle.bmc.ons.responses.CreateSubscriptionResponse;
 import com.oracle.bmc.ons.responses.PublishMessageResponse;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +20,7 @@ public class NotificationService {
     @Value("${oci.notification.topicId}")
     private String topicId;
     @Value("${oci.notification.compartmentId}")
+
     private String compartmentId;
     private final NotificationDataPlaneClient client;
 
