@@ -1,12 +1,23 @@
 package com.oci.invoicemanager.data;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "FILES")
-public record FileEntity(@Id Long id, String url, Long invoiceId) {
+public class FileEntity{
+        @Id
+        @GeneratedValue(strategy = GenerationType.SEQUENCE)
+        Long id;
+        String url;
+        @ManyToOne
+        @JoinColumn(name="INVOICEID", nullable=false)
+        InvoiceEntity invoiceId;
 }

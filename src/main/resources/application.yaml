@@ -19,8 +19,8 @@ oci:
 spring:
   datasource:
     url: jdbc:oracle:thin:@(description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=adb.eu-frankfurt-1.oraclecloud.com))(connect_data=(service_name=ga57d0421d38d7f_invoices_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
-    username: ADMIN
-    password: Qwerty1234567890
+    username: ${OCI_DB_USER}
+    password: ${OCI_DB_PASSWORD}
     driver-class-name: oracle.jdbc.OracleDriver
     type: oracle.ucp.jdbc.PoolDataSource
     oracleucp:
@@ -34,6 +34,6 @@ spring:
     database: ORACLE
     database-platform: org.hibernate.dialect.Oracle12cDialect
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
       format_sql: true
     show-sql: true

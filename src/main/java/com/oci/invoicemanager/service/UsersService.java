@@ -1,6 +1,7 @@
 package com.oci.invoicemanager.service;
 
 import com.oci.invoicemanager.data.UserEntity;
+import com.oracle.bmc.ons.responses.CreateSubscriptionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ public class UsersService {
 
     public UserEntity createUser(UserEntity userEntity) {
         UserEntity save = repository.save(userEntity);
-        notificationService.createSubscription(userEntity.getEmail());
+        CreateSubscriptionResponse subscription = notificationService.createSubscription(userEntity.getEmail());
         return save;
     }
 

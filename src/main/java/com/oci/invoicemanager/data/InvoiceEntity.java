@@ -16,12 +16,13 @@ import java.util.List;
 @Table(name = "INVOICES")
 public class InvoiceEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="USERID", nullable=false)
     UserEntity user;
     String description;
     InvoiceStatus status;
-    @OneToMany
+    @OneToMany(mappedBy="invoiceId")
     List<FileEntity> files;
 }

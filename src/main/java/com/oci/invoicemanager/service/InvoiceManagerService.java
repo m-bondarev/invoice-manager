@@ -26,7 +26,7 @@ public class InvoiceManagerService {
         if (Objects.isNull(invoice)) return null;
 
         List<String> descriptions = invoice.getFiles().stream()
-                .map(file -> objectStorageService.getTextFile("%s/%s".formatted(invoice.getId(), file.url())))
+                .map(file -> objectStorageService.getTextFile("%s/%s".formatted(invoice.getId(), file.getUrl())))
                 .toList();
         return toDescription(invoice, descriptions);
     }

@@ -13,8 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -32,7 +31,7 @@ class ControllerTest {
     void getAllUsers() throws Exception {
         mvc.perform(get("/v1/users")
                         .contentType("application/json"))
-                .andDo(res-> System.out.println("-------"+res.getResponse().getContentAsString()))
+                .andDo(res -> System.out.println("-------" + res.getResponse().getContentAsString()))
                 .andExpect(status().isOk());
     }
 
@@ -50,7 +49,9 @@ class ControllerTest {
     }
 
     @Test
-    void deleteUser() {
+    void deleteUser() throws Exception {
+        mvc.perform(delete("/v1/users", 452))
+                .andExpect(status().isOk());
     }
 
     @Test
