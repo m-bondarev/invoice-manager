@@ -1,26 +1,27 @@
 package com.oci.invoicemanager.data;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import java.util.List;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Builder
-@Table(name = "invoices")
-public record InvoiceEntity(
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "INVOICES")
+public class InvoiceEntity {
     @Id
-    Long id,
-    @OneToOne(cascade = CascadeType.ALL)
-    UserEntity user,
-    String description,
-    InvoiceStatus status,
+    Long id;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="USERID", nullable=false)
+    UserEntity user;
+    String description;
+    InvoiceStatus status;
     @OneToMany
-    List<FileEntity> files
-) {
-
+    List<FileEntity> files;
 }

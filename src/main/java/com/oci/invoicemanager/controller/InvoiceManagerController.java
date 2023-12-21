@@ -20,10 +20,8 @@ public class InvoiceManagerController {
     private final InvoiceManagerService invoiceManagerService;
 
     @GetMapping
-    public List<InvoiceEntity> getAll(
-            @RequestParam Optional<Long> userId,
-            @RequestParam Optional<InvoiceStatus> invoiceStatus) {
-        return invoiceManagerService.getAllInvoices(userId, invoiceStatus);
+    public List<InvoiceEntity> getAll() {
+        return invoiceManagerService.getAllInvoices();
     }
 
     @GetMapping(value = "/{invoiceId}")

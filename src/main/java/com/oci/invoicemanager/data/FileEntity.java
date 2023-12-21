@@ -7,6 +7,6 @@ import lombok.Builder;
 
 @Entity
 @Builder
-@Table(name = "files")
+@Table(name = "FILES")
 public record FileEntity(@Id Long id, String url, Long invoiceId) {
 }

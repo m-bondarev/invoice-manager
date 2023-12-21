@@ -4,6 +4,8 @@ import com.oci.invoicemanager.data.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UsersService {
@@ -19,5 +21,9 @@ public class UsersService {
     public void deleteUser(Long userId) {
         repository.deleteById(userId);
         // delete subscription
+    }
+
+    public List<UserEntity> getAll(){
+        return (List<UserEntity>) repository.findAll();
     }
 }

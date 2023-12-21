@@ -17,16 +17,16 @@ public class InvoiceManagerService {
     private final QueueService queueService;
     private final InvoiceEntityRepository repository;
 
-    public List<InvoiceEntity> getAllInvoices(Optional<Long> userId, Optional<InvoiceStatus> invoiceStatus) {
-        return repository.findAllByUserIdAndStatus(userId, invoiceStatus);
+    public List<InvoiceEntity> getAllInvoices() {
+        return repository.findAll();
     }
 
     public InvoiceDescription getInvoice(Long invoiceId) {
         InvoiceEntity invoice = repository.findById(invoiceId).orElse(null);
         if (Objects.isNull(invoice)) return null;
 
-        List<String> descriptions = invoice.files().stream()
-                .map(file -> objectStorageService.getTextFile("%s/%s".formatted(invoice.id(), file.url())))
+        List<String> descriptions = invoice.getFiles().stream()
+                .map(file -> objectStorageService.getTextFile("%s/%s".formatted(invoice.getId(), file.url())))
                 .toList();
         return toDescription(invoice, descriptions);
     }
@@ -39,7 +39,9 @@ public class InvoiceManagerService {
                 .status(invoice.status())
                 .files(List.of())
                 .build());
-        String filePath = objectStorageService.putTextFile(saved.id(), file);
+        String filePath = objectStorageService.putTextFile(saved.getId(), file);
+        saved.setFiles(List.of(FileEntity.builder().url(filePath).build()));
+        repository.save(saved);
 
         notificationService.publishMessage(new PublishMessage("New invoice", invoice.description()));
 
@@ -53,11 +55,11 @@ public class InvoiceManagerService {
 
     private InvoiceDescription toDescription(InvoiceEntity invoice, List<String> descriptions) {
         return InvoiceDescription.builder()
-                .id(invoice.id())
-                .userName(invoice.user().getName())
-                .userSurname(invoice.user().getSurname())
-                .description(invoice.description())
-                .status(invoice.status())
+                .id(invoice.getId())
+                .userName(invoice.getUser().getName())
+                .userSurname(invoice.getUser().getSurename())
+                .description(invoice.getDescription())
+                .status(invoice.getStatus())
                 .additions(descriptions)
                 .build();
     }
