@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,9 +38,12 @@ public class InvoiceManagerService {
                 .status(invoice.status())
                 .files(List.of())
                 .build());
-        String filePath = objectStorageService.putTextFile(saved.getId(), file);
-        saved.setFiles(List.of(FileEntity.builder().url(filePath).build()));
-        repository.save(saved);
+
+        if (!file.isEmpty()) {
+            String filePath = objectStorageService.putTextFile(saved.getId(), file);
+            saved.setFiles(List.of(FileEntity.builder().url(filePath).build()));
+            repository.save(saved);
+        }
 
         notificationService.publishMessage(new PublishMessage("New invoice", invoice.description()));
 

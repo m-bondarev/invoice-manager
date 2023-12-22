@@ -2,6 +2,9 @@ package com.oci.invoicemanager.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oci.invoicemanager.InvoiceManagerApplication;
+import com.oci.invoicemanager.data.InvoiceDto;
+import com.oci.invoicemanager.data.InvoiceEntity;
+import com.oci.invoicemanager.data.InvoiceStatus;
 import com.oci.invoicemanager.data.UserEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -50,15 +54,28 @@ class ControllerTest {
 
     @Test
     void deleteUser() throws Exception {
-        mvc.perform(delete("/v1/users", 452))
+        mvc.perform(delete("/v1/users/{userId}", 452L))
                 .andExpect(status().isOk());
     }
 
     @Test
     void getAllInvoices() throws Exception {
         mvc.perform(get("/v1/invoices")
-                        .contentType("application/json")
-                        .content(List.of().toString()))
+                        .contentType("application/json"))
+                .andDo(res -> System.out.println("-------" + res.getResponse().getContentAsString()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void createInvoice() throws Exception {
+        InvoiceDto invoice = InvoiceDto.builder()
+                .userId(425L)
+                .description("This is first invoice")
+                .status(InvoiceStatus.NEW)
+                .build();
+        mvc.perform(multipart("/v1/invoices")
+                        .file("descr1.txt", "Hello OCI".getBytes(StandardCharsets.UTF_8))
+                        .param("invoiceDto", mapper.writeValueAsString(invoice)))
                 .andExpect(status().isOk());
     }
 }
