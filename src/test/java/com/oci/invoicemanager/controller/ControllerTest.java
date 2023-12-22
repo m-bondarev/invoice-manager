@@ -3,7 +3,6 @@ package com.oci.invoicemanager.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oci.invoicemanager.InvoiceManagerApplication;
 import com.oci.invoicemanager.data.InvoiceDto;
-import com.oci.invoicemanager.data.InvoiceEntity;
 import com.oci.invoicemanager.data.InvoiceStatus;
 import com.oci.invoicemanager.data.UserEntity;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
