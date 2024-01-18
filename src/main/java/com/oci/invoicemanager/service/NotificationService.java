@@ -5,8 +5,11 @@ import com.oracle.bmc.ons.NotificationDataPlaneClient;
 import com.oracle.bmc.ons.model.CreateSubscriptionDetails;
 import com.oracle.bmc.ons.model.MessageDetails;
 import com.oracle.bmc.ons.requests.CreateSubscriptionRequest;
+import com.oracle.bmc.ons.requests.DeleteSubscriptionRequest;
+import com.oracle.bmc.ons.requests.GetSubscriptionRequest;
 import com.oracle.bmc.ons.requests.PublishMessageRequest;
 import com.oracle.bmc.ons.responses.CreateSubscriptionResponse;
+import com.oracle.bmc.ons.responses.DeleteSubscriptionResponse;
 import com.oracle.bmc.ons.responses.PublishMessageResponse;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -51,16 +54,15 @@ public class NotificationService {
         CreateSubscriptionRequest createSubscriptionRequest = CreateSubscriptionRequest.builder()
                 .createSubscriptionDetails(createSubscriptionDetails)
                 .opcRequestId(UUID.randomUUID().toString()).build();
-        // collect subscriptionId
         return client.createSubscription(createSubscriptionRequest);
     }
 
-//    public DeleteSubscriptionResponse deleteSubscription(String email) {
-//        DeleteSubscriptionRequest deleteSubscriptionDetails = DeleteSubscriptionRequest.builder()
-//                .opcRequestId(UUID.randomUUID().toString())
-//                .subscriptionId(subscriptionId)
-//                .build();
-//
-//        return client.deleteSubscription(deleteSubscriptionDetails);
-//    }
+    public DeleteSubscriptionResponse deleteSubscription(String subscriptionId) {
+        DeleteSubscriptionRequest deleteSubscriptionDetails = DeleteSubscriptionRequest.builder()
+                .opcRequestId(UUID.randomUUID().toString())
+                .subscriptionId(subscriptionId)
+                .build();
+
+        return client.deleteSubscription(deleteSubscriptionDetails);
+    }
 }

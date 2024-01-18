@@ -14,17 +14,18 @@ public class UsersService {
     private final UserRepository repository;
 
     public UserEntity createUser(UserEntity userEntity) {
-        UserEntity save = repository.save(userEntity);
         CreateSubscriptionResponse subscription = notificationService.createSubscription(userEntity.getEmail());
-        return save;
+        userEntity.setSubscriptionId(subscription.getSubscription().getId());
+        return repository.save(userEntity);
     }
 
     public void deleteUser(Long userId) {
+        repository.findById(userId)
+                .ifPresent(user -> notificationService.deleteSubscription(user.getSubscriptionId()));
         repository.deleteById(userId);
-        // delete subscription
     }
 
-    public List<UserEntity> getAll(){
+    public List<UserEntity> getAll() {
         return (List<UserEntity>) repository.findAll();
     }
 }

@@ -14,14 +14,15 @@ public class InvoiceManagerService {
     private final NotificationService notificationService;
     private final ObjectStorageService objectStorageService;
     private final QueueService queueService;
-    private final InvoiceEntityRepository repository;
+    private final InvoiceEntityRepository invoiceRepository;
+    private final UserRepository userRepository;
 
     public List<InvoiceEntity> getAllInvoices() {
-        return repository.findAll();
+        return invoiceRepository.findAll();
     }
 
     public InvoiceDescription getInvoice(Long invoiceId) {
-        InvoiceEntity invoice = repository.findById(invoiceId).orElse(null);
+        InvoiceEntity invoice = invoiceRepository.findById(invoiceId).orElse(null);
         if (Objects.isNull(invoice)) return null;
 
         List<String> descriptions = invoice.getFiles().stream()
@@ -33,16 +34,15 @@ public class InvoiceManagerService {
     public InvoiceDescription createInvoice(InvoiceDto invoice, MultipartFile file) {
         queueService.publish(invoice);
 
-        InvoiceEntity saved = repository.save(InvoiceEntity.builder()
-                .user(UserEntity.builder().id(invoice.userId()).build())
-                .status(invoice.status())
-                .files(List.of())
+        InvoiceEntity saved = invoiceRepository.save(InvoiceEntity.builder()
+                .user(userRepository.findById(invoice.userId()).orElseThrow())
+                .status(InvoiceStatus.NEW)
                 .build());
 
         if (!file.isEmpty()) {
             String filePath = objectStorageService.putTextFile(saved.getId(), file);
             saved.setFiles(List.of(FileEntity.builder().url(filePath).build()));
-            repository.save(saved);
+            invoiceRepository.save(saved);
         }
 
         notificationService.publishMessage(new PublishMessage("New invoice", invoice.description()));
@@ -51,7 +51,7 @@ public class InvoiceManagerService {
     }
 
     public void delete(Long invoiceId) {
-        repository.deleteById(invoiceId);
+        invoiceRepository.deleteById(invoiceId);
         objectStorageService.deleteObject("%s/".formatted(invoiceId));
     }
 

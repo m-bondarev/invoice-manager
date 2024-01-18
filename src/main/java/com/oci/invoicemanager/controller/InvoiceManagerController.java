@@ -25,11 +25,11 @@ public class InvoiceManagerController {
     }
 
     @GetMapping(value = "/{invoiceId}")
-    public InvoiceDescription getById(@PathVariable Long invoiceId) {
+    public InvoiceDescription getById(@PathVariable("invoiceId") Long invoiceId) {
         return invoiceManagerService.getInvoice(invoiceId);
     }
 
-    @PostMapping(produces = {
+    @PostMapping(consumes = {
             APPLICATION_JSON_VALUE,
             MULTIPART_FORM_DATA_VALUE
     })

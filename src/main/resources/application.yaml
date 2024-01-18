@@ -6,8 +6,8 @@ oci:
     fingerprint: ${OCI_CLI_FINGERPRINT}
     privateKey: ${OCI_CLI_KEY_CONTENT}
   notification:
-    topicId: ocid1.onstopic.oc1.eu-frankfurt-1.amaaaaaabas6vyiamdvbdjqfpkekmvc6mzemc7gsmxcty6wlykauwfzz5tva
-    compartmentId: ocid1.compartment.oc1..aaaaaaaa6o6arsldtxyrzyokcuqnsoao6rj7tlhkihlkorgxp42sr56njafq
+    topicId: ocid1.onstopic.oc1.eu-frankfurt-1.amaaaaaabas6vyiaeukuwstebyeomhh46uiwr76hcja6zfdtzyfeotuych4a
+    compartmentId: ocid1.compartment.oc1..aaaaaaaam652hxtpjvau4hbrykqsaggewsi6chjysfk7z3g67erpvto76ovq
   ostorage:
     nameSpace: frkogu3mhwjt
     bucketName: invoice_manager_bucket

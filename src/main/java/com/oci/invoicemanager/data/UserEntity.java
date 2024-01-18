@@ -20,4 +20,6 @@ public class UserEntity {
     private String name;
     private String surename;
     private String email;
+    @Column(name = "SUBSCRIPTION_ID")
+    private String subscriptionId;
 }
