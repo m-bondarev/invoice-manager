@@ -18,10 +18,8 @@ public class FileEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
     String url;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinTable(name = "INVOICES",
-            joinColumns = @JoinColumn(name = "INVOICEID",
-                    referencedColumnName = "ID"))
+    @ManyToOne
+    @JoinColumn(name = "INVOICEID", nullable = false)
     @JsonManagedReference
     InvoiceEntity invoiceId;
 }

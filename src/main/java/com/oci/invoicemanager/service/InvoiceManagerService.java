@@ -37,9 +37,10 @@ public class InvoiceManagerService {
         InvoiceEntity saved = invoiceRepository.save(InvoiceEntity.builder()
                 .user(userRepository.findById(invoice.userId()).orElseThrow())
                 .status(InvoiceStatus.NEW)
+                .files(List.of())
                 .build());
 
-        if (!file.isEmpty()) {
+        if (Objects.nonNull(file) && !file.isEmpty()) {
             String filePath = objectStorageService.putTextFile(saved.getId(), file);
             saved.setFiles(List.of(FileEntity.builder().url(filePath).build()));
             invoiceRepository.save(saved);
