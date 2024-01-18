@@ -1,13 +1,12 @@
 package com.oci.invoicemanager.data;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(name = "FileEntity")
 @Builder
 @Data
 @AllArgsConstructor
@@ -18,8 +17,6 @@ public class FileEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
     String url;
-    @ManyToOne
-    @JoinColumn(name = "INVOICEID", nullable = false)
-    @JsonManagedReference
-    InvoiceEntity invoiceId;
+    @Column(name = "INVOICE_ID")
+    Long invoiceId;
 }

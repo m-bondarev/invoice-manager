@@ -1,6 +1,6 @@
 package com.oci.invoicemanager.data;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,13 +19,16 @@ public class InvoiceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "USERID")
     UserEntity user;
     String description;
     InvoiceStatus status;
-    @OneToMany(mappedBy = "invoiceId",
-            cascade = CascadeType.ALL)
-    @JsonIgnore
+    @OneToMany(targetEntity = FileEntity.class,
+            mappedBy = "invoiceId",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JsonManagedReference
     List<FileEntity> files;
 }

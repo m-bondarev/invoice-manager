@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
@@ -85,7 +86,7 @@ public class ObjectStorageService {
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .namespaceName(namespace)
                     .bucketName(bucketName)
-                    .objectName("%s/%s".formatted(invoiceId, file.getName()))
+                    .objectName("%s/%s".formatted(invoiceId, file.getOriginalFilename()))
                     .contentType(TEXT_CONTENT)
                     .body$(new ByteArrayInputStream(file.getBytes()))
                     .build();
@@ -93,26 +94,32 @@ public class ObjectStorageService {
             if (HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
                 throw new IllegalStateException("Put Object err with status code %s".formatted(response.get__httpStatusCode__()));
             }
-            return file.getName();
+            return file.getOriginalFilename();
         } catch (IOException e) {
             throw new IllegalStateException("OOps", e);
         }
     }
 
+    @Transactional
     public void deleteObject(String prefix) {
         try (ObjectStorageClient client = ObjectStorageClient.builder()
                 .build(provider)) {
-            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
-                    .namespaceName(namespace)
-                    .bucketName(bucketName)
-                    .objectName(prefix)
-                    .build();
-
-            DeleteObjectResponse response = client.deleteObject(deleteObjectRequest);
-            if (HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
-                throw new IllegalStateException(
-                        "Delete Objects err with status code %s".formatted(response.get__httpStatusCode__()));
-            }
+            listObjects(prefix, null)
+                    .forEach(object -> {
+                        DeleteObjectResponse response = client.deleteObject(generateDeleteRequest(object));
+                        if (HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
+                            throw new IllegalStateException(
+                                    "Delete Objects err with status code %s".formatted(response.get__httpStatusCode__()));
+                        }
+                    });
         }
+    }
+
+    private DeleteObjectRequest generateDeleteRequest(String prefix) {
+        return DeleteObjectRequest.builder()
+                .namespaceName(namespace)
+                .bucketName(bucketName)
+                .objectName(prefix)
+                .build();
     }
 }

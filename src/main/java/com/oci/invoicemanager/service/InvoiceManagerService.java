@@ -3,6 +3,7 @@ package com.oci.invoicemanager.service;
 import com.oci.invoicemanager.data.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -14,8 +15,15 @@ public class InvoiceManagerService {
     private final NotificationService notificationService;
     private final ObjectStorageService objectStorageService;
     private final QueueService queueService;
-    private final InvoiceEntityRepository invoiceRepository;
+    private final FilesRepository filesRepository;
+    private final InvoiceRepository invoiceRepository;
     private final UserRepository userRepository;
+
+    public InvoiceDescription updateInvoice(Long invoiceId,
+                                            InvoiceDto invoice,
+                                            MultipartFile file) {
+        //TODO
+    }
 
     public List<InvoiceEntity> getAllInvoices() {
         return invoiceRepository.findAll();
@@ -31,19 +39,18 @@ public class InvoiceManagerService {
         return toDescription(invoice, descriptions);
     }
 
+    //    @Transactional
     public InvoiceDescription createInvoice(InvoiceDto invoice, MultipartFile file) {
         queueService.publish(invoice);
 
         InvoiceEntity saved = invoiceRepository.save(InvoiceEntity.builder()
                 .user(userRepository.findById(invoice.userId()).orElseThrow())
                 .status(InvoiceStatus.NEW)
-                .files(List.of())
                 .build());
 
-        if (Objects.nonNull(file) && !file.isEmpty()) {
+        if (Objects.nonNull(file)) {
             String filePath = objectStorageService.putTextFile(saved.getId(), file);
-            saved.setFiles(List.of(FileEntity.builder().url(filePath).build()));
-            invoiceRepository.save(saved);
+            filesRepository.save(FileEntity.builder().invoiceId(saved.getId()).url(filePath).build());
         }
 
         notificationService.publishMessage(new PublishMessage("New invoice", invoice.description()));
@@ -51,9 +58,12 @@ public class InvoiceManagerService {
         return toDescription(saved, List.of());
     }
 
+    @Transactional
     public void delete(Long invoiceId) {
+        if (filesRepository.existsByInvoiceId(invoiceId)) {
+            objectStorageService.deleteObject(invoiceId.toString());
+        }
         invoiceRepository.deleteById(invoiceId);
-        objectStorageService.deleteObject("%s/".formatted(invoiceId));
     }
 
     private InvoiceDescription toDescription(InvoiceEntity invoice, List<String> descriptions) {
