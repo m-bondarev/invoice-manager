@@ -1,4 +1,4 @@
-package com.oci.invoicemanager.service;
+package com.oci.invoicemanager.repo;
 
 import com.oci.invoicemanager.data.InvoiceEntity;
 import org.springframework.data.jpa.repository.Modifying;

@@ -16,14 +16,18 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "INVOICES")
 public class InvoiceEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
+
     @ManyToOne
     @JoinColumn(name = "USERID")
     UserEntity user;
+
     String description;
     InvoiceStatus status;
+
     @OneToMany(targetEntity = FileEntity.class,
             mappedBy = "invoiceId",
             cascade = CascadeType.ALL,

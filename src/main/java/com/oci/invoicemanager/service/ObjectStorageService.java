@@ -28,26 +28,29 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class ObjectStorageService {
+
     public static final String TEXT_CONTENT = "text/plain";
-    private final AuthenticationDetailsProvider provider;
+
     @Value("${oci.ostorage.nameSpace}")
     private String namespace;
     @Value("${oci.ostorage.bucketName}")
     private String bucketName;
+
+    private final AuthenticationDetailsProvider provider;
 
     public List<String> listObjects(String prefix, Integer limit) {
 
         try (ObjectStorageClient client = ObjectStorageClient.builder()
                 .build(provider)) {
 
-            ListObjectsRequest listObjectsRequest = ListObjectsRequest.builder()
+            final var listObjectsRequest = ListObjectsRequest.builder()
                     .namespaceName(namespace)
                     .bucketName(bucketName)
                     .prefix(prefix)
                     .limit(limit)
                     .build();
 
-            ListObjectsResponse response = client.listObjects(listObjectsRequest);
+            final var response = client.listObjects(listObjectsRequest);
 
             if (HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
                 throw new IllegalStateException(
@@ -55,20 +58,22 @@ public class ObjectStorageService {
             }
 
             return response.getListObjects().getObjects()
-                    .stream().map(ObjectSummary::getName).toList();
+                    .stream()
+                    .map(ObjectSummary::getName)
+                    .toList();
         }
     }
 
     public String getTextFile(String objName) {
         try (ObjectStorageClient client = ObjectStorageClient.builder()
                 .build(provider)) {
-            GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+            final var getObjectRequest = GetObjectRequest.builder()
                     .namespaceName(namespace)
                     .bucketName(bucketName)
                     .objectName(objName)
                     .build();
 
-            GetObjectResponse response = client.getObject(getObjectRequest);
+            final var response = client.getObject(getObjectRequest);
 
             if (!HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
                 return new String(response.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
@@ -83,17 +88,20 @@ public class ObjectStorageService {
     public String putTextFile(Long invoiceId, MultipartFile file) {
         try (ObjectStorageClient client = ObjectStorageClient.builder()
                 .build(provider)) {
-            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+            final var putObjectRequest = PutObjectRequest.builder()
                     .namespaceName(namespace)
                     .bucketName(bucketName)
                     .objectName("%s/%s".formatted(invoiceId, file.getOriginalFilename()))
                     .contentType(TEXT_CONTENT)
                     .body$(new ByteArrayInputStream(file.getBytes()))
                     .build();
-            PutObjectResponse response = client.putObject(putObjectRequest);
+
+            final var response = client.putObject(putObjectRequest);
+
             if (HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
                 throw new IllegalStateException("Put Object err with status code %s".formatted(response.get__httpStatusCode__()));
             }
+
             return file.getOriginalFilename();
         } catch (IOException e) {
             throw new IllegalStateException("OOps", e);
@@ -106,7 +114,8 @@ public class ObjectStorageService {
                 .build(provider)) {
             listObjects(prefix, null)
                     .forEach(object -> {
-                        DeleteObjectResponse response = client.deleteObject(generateDeleteRequest(object));
+                        final var response = client.deleteObject(generateDeleteRequest(object));
+
                         if (HttpStatusCode.valueOf(response.get__httpStatusCode__()).isError()) {
                             throw new IllegalStateException(
                                     "Delete Objects err with status code %s".formatted(response.get__httpStatusCode__()));

@@ -4,6 +4,6 @@ import lombok.Builder;
 
 @Builder
 public record InvoiceDto(
-        Long userId,
-        String description) {
+		Long userId,
+		String description) {
 }

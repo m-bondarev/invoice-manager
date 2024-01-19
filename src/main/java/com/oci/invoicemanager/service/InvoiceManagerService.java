@@ -1,6 +1,9 @@
 package com.oci.invoicemanager.service;
 
 import com.oci.invoicemanager.data.*;
+import com.oci.invoicemanager.repo.FilesRepository;
+import com.oci.invoicemanager.repo.InvoiceRepository;
+import com.oci.invoicemanager.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +15,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class InvoiceManagerService {
+
     private final NotificationService notificationService;
     private final ObjectStorageService objectStorageService;
     private final QueueService queueService;
@@ -34,12 +38,16 @@ public class InvoiceManagerService {
     }
 
     public InvoiceDescription getInvoice(Long invoiceId) {
-        InvoiceEntity invoice = invoiceRepository.findById(invoiceId).orElse(null);
-        if (Objects.isNull(invoice)) return null;
+        final var invoice = invoiceRepository.findById(invoiceId).orElse(null);
 
-        List<String> descriptions = invoice.getFiles().stream()
+        if (Objects.isNull(invoice)) {
+			return null;
+		}
+
+        final var descriptions = invoice.getFiles().stream()
                 .map(file -> objectStorageService.getTextFile("%s/%s".formatted(invoice.getId(), file.getUrl())))
                 .toList();
+
         return toDescription(invoice, descriptions);
     }
 
@@ -47,7 +55,7 @@ public class InvoiceManagerService {
     public InvoiceDescription createInvoice(InvoiceDto invoice, MultipartFile file) {
         queueService.publish(invoice);
 
-        InvoiceEntity saved = invoiceRepository.save(InvoiceEntity.builder()
+        final var saved = invoiceRepository.save(InvoiceEntity.builder()
                 .user(userRepository.findById(invoice.userId()).orElseThrow())
                 .status(InvoiceStatus.NEW)
                 .build());
@@ -62,6 +70,7 @@ public class InvoiceManagerService {
         if (filesRepository.existsByInvoiceId(invoiceId)) {
             objectStorageService.deleteObject(invoiceId.toString());
         }
+
         invoiceRepository.deleteById(invoiceId);
     }
 

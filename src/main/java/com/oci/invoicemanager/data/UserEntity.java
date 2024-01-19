@@ -17,9 +17,11 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
     private String name;
     private String surename;
     private String email;
+
     @Column(name = "SUBSCRIPTION_ID")
     private String subscriptionId;
 }
