@@ -19,10 +19,14 @@ public class InvoiceManagerService {
     private final InvoiceRepository invoiceRepository;
     private final UserRepository userRepository;
 
-    public InvoiceDescription updateInvoice(Long invoiceId,
-                                            InvoiceDto invoice,
-                                            MultipartFile file) {
-        //TODO
+    @Transactional
+    public Long updateInvoice(Long invoiceId,
+                              String description,
+                              MultipartFile file) {
+        if (!invoiceRepository.existsById(invoiceId)) throw new IllegalArgumentException("Invoice do not exist");
+        invoiceRepository.updateDescription(invoiceId, description);
+        storeFile(file, invoiceId);
+        return invoiceId;
     }
 
     public List<InvoiceEntity> getAllInvoices() {
@@ -39,7 +43,7 @@ public class InvoiceManagerService {
         return toDescription(invoice, descriptions);
     }
 
-    //    @Transactional
+    @Transactional
     public InvoiceDescription createInvoice(InvoiceDto invoice, MultipartFile file) {
         queueService.publish(invoice);
 
@@ -47,12 +51,7 @@ public class InvoiceManagerService {
                 .user(userRepository.findById(invoice.userId()).orElseThrow())
                 .status(InvoiceStatus.NEW)
                 .build());
-
-        if (Objects.nonNull(file)) {
-            String filePath = objectStorageService.putTextFile(saved.getId(), file);
-            filesRepository.save(FileEntity.builder().invoiceId(saved.getId()).url(filePath).build());
-        }
-
+        storeFile(file, saved.getId());
         notificationService.publishMessage(new PublishMessage("New invoice", invoice.description()));
 
         return toDescription(saved, List.of());
@@ -64,6 +63,13 @@ public class InvoiceManagerService {
             objectStorageService.deleteObject(invoiceId.toString());
         }
         invoiceRepository.deleteById(invoiceId);
+    }
+
+    private void storeFile(MultipartFile file, Long invoiceId) {
+        if (Objects.nonNull(file)) {
+            String filePath = objectStorageService.putTextFile(invoiceId, file);
+            filesRepository.save(FileEntity.builder().invoiceId(invoiceId).url(filePath).build());
+        }
     }
 
     private InvoiceDescription toDescription(InvoiceEntity invoice, List<String> descriptions) {

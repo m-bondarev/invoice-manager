@@ -39,13 +39,12 @@ public class InvoiceManagerController {
         return invoiceManagerService.createInvoice(invoice, file);
     }
 
-    //DOTO
     @PutMapping(value = "/{invoiceId}")
-    public InvoiceDescription update(
+    public Long update(
             @PathVariable("invoiceId") Long invoiceId,
-            @RequestPart(name = "invoice") InvoiceDto invoice,
+            @RequestPart(name = "description") String description,
             @RequestPart(name = "file", required = false) MultipartFile file) {
-        return invoiceManagerService.updateInvoice(invoiceId, invoice, file);
+        return invoiceManagerService.updateInvoice(invoiceId, description, file);
     }
 
     @DeleteMapping(value = "/{invoiceId}")

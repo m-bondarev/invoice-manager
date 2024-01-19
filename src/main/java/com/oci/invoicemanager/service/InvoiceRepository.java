@@ -1,12 +1,14 @@
 package com.oci.invoicemanager.service;
 
 import com.oci.invoicemanager.data.InvoiceEntity;
-import com.oci.invoicemanager.data.InvoiceStatus;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
-
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.repository.query.Param;
 
 public interface InvoiceRepository extends ListCrudRepository<InvoiceEntity, Long> {
-    List<InvoiceEntity> findAllByUserIdAndStatus(Optional<Long> userId, Optional<InvoiceStatus> status);
+
+    @Modifying
+    @Query("update InvoiceEntity i set i.description = :description, i.status = com.oci.invoicemanager.data.InvoiceStatus.UPDATED where i.id = :id")
+    void updateDescription(@Param(value = "id") long id, @Param(value = "description") String description);
 }
