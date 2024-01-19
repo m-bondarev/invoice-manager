@@ -19,12 +19,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class QueueService {
+
     private final QueueClient queueClient;
 
     @Value("${oci.queue.ocid}")
     private String queueId;
 
-    public PutMessagesResponse publish(InvoiceDto invoiceDto) {
+    public PutMessagesResponse publish(final InvoiceDto invoiceDto) {
         log.info("Publishing message {}", invoiceDto.userId());
 
         final var putMessagesRequest = PutMessagesRequest.builder()

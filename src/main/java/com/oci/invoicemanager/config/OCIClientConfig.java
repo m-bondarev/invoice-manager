@@ -46,12 +46,12 @@ public class OCIClientConfig {
 
     @Bean
     public QueueClient queueClient(
-            AuthenticationDetailsProvider authenticationDetailsProvider) {
+            AuthenticationDetailsProvider authenticationDetailsProvider
+    ) {
         return QueueClient.builder()
                 .endpoint("https://cell-1.queue.messaging.eu-frankfurt-1.oci.oraclecloud.com")
                 .build(authenticationDetailsProvider);
     }
-
 
     private Supplier<InputStream> getKey(String key) {
         key = key.replaceAll(" ", "\n");

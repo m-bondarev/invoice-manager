@@ -25,16 +25,17 @@ public class NotificationService {
     @Value("${oci.notification.compartmentId}")
 
     private String compartmentId;
+
     private final NotificationDataPlaneClient client;
 
     public PublishMessageResponse publishMessage(PublishMessage publishMessage) {
 
-        MessageDetails messageDetails = MessageDetails.builder()
+        final var messageDetails = MessageDetails.builder()
                 .title(publishMessage.title())
                 .body(publishMessage.message())
                 .build();
 
-        PublishMessageRequest publishMessageRequest = PublishMessageRequest.builder()
+        final var publishMessageRequest = PublishMessageRequest.builder()
                 .topicId(topicId)
                 .messageDetails(messageDetails)
                 .opcRequestId(UUID.randomUUID().toString())
@@ -44,21 +45,22 @@ public class NotificationService {
     }
 
     public CreateSubscriptionResponse createSubscription(String email) {
-        CreateSubscriptionDetails createSubscriptionDetails = CreateSubscriptionDetails.builder()
+        final var createSubscriptionDetails = CreateSubscriptionDetails.builder()
                 .topicId(topicId)
                 .compartmentId(compartmentId)
                 .protocol("EMAIL")
                 .endpoint(email)
                 .build();
 
-        CreateSubscriptionRequest createSubscriptionRequest = CreateSubscriptionRequest.builder()
+        final var createSubscriptionRequest = CreateSubscriptionRequest.builder()
                 .createSubscriptionDetails(createSubscriptionDetails)
                 .opcRequestId(UUID.randomUUID().toString()).build();
+
         return client.createSubscription(createSubscriptionRequest);
     }
 
     public DeleteSubscriptionResponse deleteSubscription(String subscriptionId) {
-        DeleteSubscriptionRequest deleteSubscriptionDetails = DeleteSubscriptionRequest.builder()
+        final var deleteSubscriptionDetails = DeleteSubscriptionRequest.builder()
                 .opcRequestId(UUID.randomUUID().toString())
                 .subscriptionId(subscriptionId)
                 .build();

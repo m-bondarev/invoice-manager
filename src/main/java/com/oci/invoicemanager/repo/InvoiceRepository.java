@@ -1,4 +1,4 @@
-package com.oci.invoicemanager.service;
+package com.oci.invoicemanager.repo;
 
 import com.oci.invoicemanager.data.InvoiceEntity;
 import com.oci.invoicemanager.data.InvoiceStatus;
@@ -8,5 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface InvoiceRepository extends ListCrudRepository<InvoiceEntity, Long> {
+
     List<InvoiceEntity> findAllByUserIdAndStatus(Optional<Long> userId, Optional<InvoiceStatus> status);
 }

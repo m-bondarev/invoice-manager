@@ -1,4 +1,4 @@
-package com.oci.invoicemanager.service;
+package com.oci.invoicemanager.repo;
 
 import com.oci.invoicemanager.data.UserEntity;
 import org.springframework.data.repository.CrudRepository;

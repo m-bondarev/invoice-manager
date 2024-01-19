@@ -1,6 +1,7 @@
 package com.oci.invoicemanager.service;
 
 import com.oci.invoicemanager.data.UserEntity;
+import com.oci.invoicemanager.repo.UserRepository;
 import com.oracle.bmc.ons.responses.CreateSubscriptionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

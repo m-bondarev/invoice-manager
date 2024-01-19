@@ -17,6 +17,7 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 @RequiredArgsConstructor
 @RequestMapping(value = "/v1/invoices", produces = APPLICATION_JSON_VALUE)
 public class InvoiceManagerController {
+
     private final InvoiceManagerService invoiceManagerService;
 
     @GetMapping
@@ -25,7 +26,8 @@ public class InvoiceManagerController {
     }
 
     @GetMapping(value = "/{invoiceId}")
-    public InvoiceDescription getById(@PathVariable("invoiceId") Long invoiceId) {
+    public InvoiceDescription getById(@PathVariable("invoiceId") Long invoiceId
+    ) {
         return invoiceManagerService.getInvoice(invoiceId);
     }
 
@@ -35,7 +37,8 @@ public class InvoiceManagerController {
     })
     public InvoiceDescription create(
             @RequestPart(name = "invoice") InvoiceDto invoice,
-            @RequestPart(name = "file", required = false) MultipartFile file) {
+            @RequestPart(name = "file", required = false) MultipartFile file
+    ) {
         return invoiceManagerService.createInvoice(invoice, file);
     }
 
@@ -44,12 +47,14 @@ public class InvoiceManagerController {
     public InvoiceDescription update(
             @PathVariable("invoiceId") Long invoiceId,
             @RequestPart(name = "invoice") InvoiceDto invoice,
-            @RequestPart(name = "file", required = false) MultipartFile file) {
+            @RequestPart(name = "file", required = false) MultipartFile file
+    ) {
         return invoiceManagerService.updateInvoice(invoiceId, invoice, file);
     }
 
     @DeleteMapping(value = "/{invoiceId}")
-    public void delete(@PathVariable("invoiceId") Long invoiceId) {
+    public void delete(@PathVariable("invoiceId") Long invoiceId
+    ) {
         invoiceManagerService.delete(invoiceId);
     }
 }

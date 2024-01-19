@@ -13,10 +13,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "FILES")
 public class FileEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
+
     String url;
+
     @Column(name = "INVOICE_ID")
     Long invoiceId;
 }
