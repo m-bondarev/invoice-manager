@@ -45,9 +45,9 @@ public class InvoiceManagerController {
     @PutMapping(value = "/{invoiceId}")
     public Long update(
             @PathVariable("invoiceId") Long invoiceId,
-            @RequestPart(name = "description") String description,
+            @RequestPart(name = "invoice") InvoiceDto invoice,
             @RequestPart(name = "file", required = false) MultipartFile file) {
-        return invoiceManagerService.updateInvoice(invoiceId, description, file);
+        return invoiceManagerService.updateInvoice(invoiceId, invoice, file);
     }
 
     @DeleteMapping(value = "/{invoiceId}")
