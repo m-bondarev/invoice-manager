@@ -23,7 +23,6 @@ public class NotificationService {
     @Value("${oci.notification.topicId}")
     private String topicId;
     @Value("${oci.notification.compartmentId}")
-
     private String compartmentId;
 
     private final NotificationDataPlaneClient client;

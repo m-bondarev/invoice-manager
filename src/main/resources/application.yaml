@@ -1,19 +1,19 @@
 oci:
   client:
-    region: ${OCI_CLI_REGION:fra}
+    region: ${OCI_CLI_REGION}
     tenancyId: ${OCI_CLI_TENANCY}
     userId: ${OCI_CLI_USER}
     fingerprint: ${OCI_CLI_FINGERPRINT}
     privateKey: ${OCI_CLI_KEY_CONTENT}
   notification:
-    topicId: ${TOPIC_ID}
-    compartmentId: ${COMPARTMENT_ID}
+    topicId: ocid1.onstopic.oc1.eu-frankfurt-1.amaaaaaabas6vyiaeukuwstebyeomhh46uiwr76hcja6zfdtzyfeotuych4a
+    compartmentId: ocid1.compartment.oc1..aaaaaaaam652hxtpjvau4hbrykqsaggewsi6chjysfk7z3g67erpvto76ovq
   ostorage:
-    nameSpace: ${NAMESPACE}
+    nameSpace: frkogu3mhwjt
     bucketName: invoice_manager_bucket
   queue:
-    ocid: ${OCI_QUEUE_ID}
-    dlqOcid: ${OCI_QUEUE_ID}-dlq
+    ocid: ocid1.queue.oc1.eu-frankfurt-1.amaaaaaabas6vyiaodmj6xvsrhossja7lgjggjz6npjb63ejgvaa736xhiva
+    dlqOcid: ocid1.queue.oc1.eu-frankfurt-1.amaaaaaabas6vyiaodmj6xvsrhossja7lgjggjz6npjb63ejgvaa736xhiva-dlq
     endpoint: https://cell-1.queue.messaging.eu-frankfurt-1.oci.oraclecloud.com
 
 spring:
