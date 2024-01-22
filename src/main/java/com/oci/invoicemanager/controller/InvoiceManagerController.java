@@ -1,5 +1,6 @@
 package com.oci.invoicemanager.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.oci.invoicemanager.data.InvoiceDescription;
 import com.oci.invoicemanager.data.InvoiceDto;
 import com.oci.invoicemanager.data.InvoiceEntity;
@@ -38,7 +39,7 @@ public class InvoiceManagerController {
     public InvoiceDescription create(
             @RequestPart(name = "invoice") InvoiceDto invoice,
             @RequestPart(name = "file", required = false) MultipartFile file
-    ) {
+    ) throws JsonProcessingException {
         return invoiceManagerService.createInvoice(invoice, file);
     }
 

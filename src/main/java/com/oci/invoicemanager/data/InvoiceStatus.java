@@ -1,5 +1,5 @@
 package com.oci.invoicemanager.data;
 
 public enum InvoiceStatus {
-    NEW, UPDATED
+    VERIFIED, NEW, UPDATED
 }
