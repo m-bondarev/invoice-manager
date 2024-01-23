@@ -45,7 +45,7 @@ public class InvoiceManagerService {
         return toDescription(invoice, descriptions);
     }
 
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional
     public InvoiceDescription createInvoice(InvoiceDto invoice, MultipartFile file) throws JsonProcessingException {
         final var saved = invoiceRepository.save(InvoiceEntity.builder()
                 .user(userRepository.findById(invoice.userId()).orElseThrow())
