@@ -6,16 +6,17 @@ import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.StringPrivateKeySupplier;
 import com.oracle.bmc.ons.NotificationDataPlaneClient;
 import com.oracle.bmc.queue.QueueClient;
-import java.io.InputStream;
-import java.sql.SQLException;
-import java.util.function.Supplier;
-import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import oracle.jdbc.datasource.impl.OracleDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.sql.DataSource;
+import java.io.InputStream;
+import java.sql.SQLException;
+import java.util.function.Supplier;
 
 @Configuration
 @Slf4j
@@ -24,7 +25,6 @@ public class OCIClientConfig {
     @ConfigurationProperties(prefix = "oci.client")
     public record OCIClientProps(String tenancyId, String userId, String fingerprint,
                                  String privateKey, Region region) {
-
     }
 
     @Bean

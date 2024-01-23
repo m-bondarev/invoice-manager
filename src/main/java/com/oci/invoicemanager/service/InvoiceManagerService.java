@@ -1,5 +1,6 @@
 package com.oci.invoicemanager.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.oci.invoicemanager.data.*;
 import com.oci.invoicemanager.repo.FilesRepository;
 import com.oci.invoicemanager.repo.InvoiceRepository;
@@ -44,15 +45,15 @@ public class InvoiceManagerService {
         return toDescription(invoice, descriptions);
     }
 
-    @Transactional(propagation = Propagation.SUPPORTS)
-    public InvoiceDescription createInvoice(InvoiceDto invoice, MultipartFile file) {
-        queueService.publish(invoice);
+    @Transactional
+    public InvoiceDescription createInvoice(InvoiceDto invoice, MultipartFile file) throws JsonProcessingException {
         final var saved = invoiceRepository.save(InvoiceEntity.builder()
                 .user(userRepository.findById(invoice.userId()).orElseThrow())
                 .description(invoice.description())
                 .status(InvoiceStatus.NEW)
                 .build());
         storeFile(file, saved.getId());
+        queueService.publish(saved);
         notificationService.publishMessage(new PublishMessage("New invoice", invoice.description()));
 
         return toDescription(saved, List.of(getFileContent(file)));

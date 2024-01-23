@@ -1,6 +1,5 @@
 package com.oci.invoicemanager.data;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +32,5 @@ public class InvoiceEntity {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    @JsonManagedReference
     List<FileEntity> files;
 }
