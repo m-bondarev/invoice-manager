@@ -24,11 +24,13 @@ public class OCIClientConfig {
 
     @ConfigurationProperties(prefix = "oci.client")
     public record OCIClientProps(String tenancyId, String userId, String fingerprint,
-                                 String privateKey, Region region) {
+                                 String privateKey, Region region, String authToken) {
     }
 
     @Bean
     public AuthenticationDetailsProvider authenticationDetailsProvider(OCIClientProps clientProps) {
+        System.out.println(clientProps.toString());
+
         return SimpleAuthenticationDetailsProvider.builder()
                 .tenantId(clientProps.tenancyId())
                 .userId(clientProps.userId())

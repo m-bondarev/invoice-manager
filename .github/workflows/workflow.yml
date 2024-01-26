@@ -24,7 +24,6 @@ jobs:
       OCI_DB_USER: ${{ secrets.OCI_DB_USER }}
       OCI_DB_PASSWORD: ${{ secrets.OCI_DB_PASSWORD }}
       INSTANCE_OCID: ${{ secrets.INSTANCE_OCID }}
-      AUTH_TOKEN: ${{ secrets.OCI_AUTH_TOKEN }}
 
     steps:
     - uses: actions/checkout@v3
@@ -53,9 +52,6 @@ jobs:
       with:
         auth_token: ${{ secrets.OCI_AUTH_TOKEN }}
 
-    - name: Set env
-      run: echo "${{ env.AUTH_TOKEN }}"
-
     - name: Get an OCIR Repository
       uses: oracle-actions/get-ocir-repository@v1.2.1
       id: get-ocir-repository
@@ -78,6 +74,7 @@ jobs:
           "OCI_CLI_FINGERPRINT=${{ env.OCI_CLI_FINGERPRINT }}"
           "OCI_DB_USER=${{ env.OCI_DB_USER }}"
           "OCI_DB_PASSWORD=${{ env.OCI_DB_PASSWORD }}"
+          "OCI_AUTH_TOKEN=${{ secrets.OCI_AUTH_TOKEN }}"
 
     - name: Retrieve the instance id in my compartment
       uses: oracle-actions/run-oci-cli-command@v1.1.1
