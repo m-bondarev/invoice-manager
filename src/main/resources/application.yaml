@@ -5,7 +5,6 @@ oci:
     userId: ${OCI_CLI_USER}
     fingerprint: ${OCI_CLI_FINGERPRINT}
     privateKey: ${OCI_CLI_KEY_CONTENT}
-    authToken: ${OCI_AUTH_TOKEN}
   notification:
     topicId: ocid1.onstopic.oc1.eu-frankfurt-1.amaaaaaabas6vyiaeukuwstebyeomhh46uiwr76hcja6zfdtzyfeotuych4a
     compartmentId: ocid1.compartment.oc1..aaaaaaaam652hxtpjvau4hbrykqsaggewsi6chjysfk7z3g67erpvto76ovq
