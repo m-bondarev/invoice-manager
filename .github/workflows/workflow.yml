@@ -74,7 +74,6 @@ jobs:
           "OCI_CLI_FINGERPRINT=${{ env.OCI_CLI_FINGERPRINT }}"
           "OCI_DB_USER=${{ env.OCI_DB_USER }}"
           "OCI_DB_PASSWORD=${{ env.OCI_DB_PASSWORD }}"
-          "OCI_AUTH_TOKEN=${{ secrets.OCI_AUTH_TOKEN }}"
 
     - name: Retrieve the instance id in my compartment
       uses: oracle-actions/run-oci-cli-command@v1.1.1
