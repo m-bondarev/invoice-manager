@@ -8,7 +8,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class HelloFunction {
+public class AuditFunction {
 
 	public String handleRequest(String input) throws IOException, InterruptedException {
 		final var objectMapper = new ObjectMapper();
@@ -18,11 +18,9 @@ public class HelloFunction {
 		final var eventId = jsonNode.at("/eventID").textValue();
 		final var requestBody = """
 				{
-					"eventTime": "%s",
+					"restartDate": "%s",
 					"eventId": "%s"
 				}""".formatted(eventTime, eventId);
-
-		System.out.println("Request body to audit +++++ " + requestBody);
 
 		final var httpClient = HttpClient.newHttpClient();
 
