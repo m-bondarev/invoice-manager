@@ -29,6 +29,7 @@ public class HelloFunction {
 		final var request = HttpRequest.newBuilder()
 				.uri(URI.create("http://130.61.75.135:8080/v1/audit"))
 				.version(HttpClient.Version.HTTP_1_1)
+				.header("Content-Type", "application/json")
 				.POST(HttpRequest.BodyPublishers.ofString(requestBody))
 				.build();
 
