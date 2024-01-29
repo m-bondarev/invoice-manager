@@ -205,6 +205,88 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "localhost:8080/v1/audit?from=2019-11-05T02:53:51.000Z&to=2019-12-05T02:53:51.000Z",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/v1/audit?from=2019-11-05T02:53:51.000Z&to=2019-12-05T02:53:51.000Z",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"audit"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "2019-11-05T02:53:51.000Z"
+						},
+						{
+							"key": "to",
+							"value": "2019-12-05T02:53:51.000Z"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/v1/audit",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"eventId\":\"1.1.1.1\",\r\n    \"restartDate\":\"2019-11-05T02:53:51.000Z\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/v1/audit",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"audit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/v1/audit?date=2024-11-05T02:53:51.000Z",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/v1/audit?date=2024-11-05T02:53:51.000Z",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"audit"
+					],
+					"query": [
+						{
+							"key": "date",
+							"value": "2024-11-05T02:53:51.000Z"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
