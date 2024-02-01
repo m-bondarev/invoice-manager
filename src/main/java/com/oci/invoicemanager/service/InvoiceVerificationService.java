@@ -18,6 +18,7 @@ public class InvoiceVerificationService {
     @Scheduled(fixedDelay = 4000)
     public void verifyInvoice() {
         log.info("Processing...");
+        //TODO some validation....
         invoiceRepository.updateStatus(queueService.getMessages(), InvoiceStatus.VERIFIED);
     }
 }
